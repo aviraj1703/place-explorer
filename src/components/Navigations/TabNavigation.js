@@ -6,6 +6,8 @@ import Favourite from "../Screen/Favourite";
 import Search from "../Screen/Search";
 import Profile from "../Screen/Profile";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import Colors from "../Shared/Colors";
+import Size from "../Shared/Size";
 
 export default function TabNavigation() {
   const Tab = createBottomTabNavigator();
@@ -16,8 +18,8 @@ export default function TabNavigation() {
         component={Home}
         options={{
           tabBarLabel: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={24} color="black" />
+          tabBarIcon: () => (
+            <Ionicons name="home" size={Size.iconSize} color={Colors.black} />
           ),
         }}
       />
@@ -26,8 +28,8 @@ export default function TabNavigation() {
         component={Search}
         options={{
           tabBarLabel: "Search",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search" size={24} color="black" />
+          tabBarIcon: () => (
+            <Ionicons name="search" size={Size.iconSize} color={Colors.black} />
           ),
         }}
       />
@@ -36,8 +38,8 @@ export default function TabNavigation() {
         component={Favourite}
         options={{
           tabBarLabel: "Favourite",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="heart" size={24} color="red" />
+          tabBarIcon: () => (
+            <Ionicons name="heart" size={Size.iconSize} color={Colors.crimson} />
           ),
         }}
       />
@@ -46,8 +48,8 @@ export default function TabNavigation() {
         component={Profile}
         options={{
           tabBarLabel: "Profile",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="account-circle" size={24} color="black" />
+          tabBarIcon: () => (
+            <MaterialIcons name="account-circle" size={Size.iconSize} color={Colors.black} />
           ),
         }}
       />

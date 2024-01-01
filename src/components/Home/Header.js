@@ -1,5 +1,7 @@
 import { StyleSheet, View, Text, Image, TextInput } from "react-native";
 import React from "react";
+import Colors from "../Shared/Colors";
+import Size from "../Shared/Size";
 
 export default function Header() {
   return (
@@ -12,7 +14,7 @@ export default function Header() {
         <TextInput
           placeholder="Search here..."
           style={styles.search}
-          selectionColor={"grey"}
+          selectionColor={Colors.grey}
         />
         <Image
           source={require("../../../assets/Aviraj.jpg")}
@@ -26,21 +28,21 @@ export default function Header() {
 const styles = StyleSheet.create({
   header: {
     width: "100vw",
-    paddingTop: "13%",
-    paddingBottom: "2%",
+    height: "20%",
+    minHeight: 180,
+    paddingTop: "15%",
     display: "flex",
     alignItems: "center",
   },
   container: {
-    height: "39%",
+    height: "40%",
     width: "90%",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     borderRadius: 30,
-    borderWidth: 1,
-    shadowColor: "#EFDFBB",
+    shadowColor: Colors.cornsilk,
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.8,
     shadowRadius: 5,
@@ -54,7 +56,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: "75%",
     padding: 5,
-    fontSize: 17,
+    fontSize: Size.searchFontSize,
   },
   userImage: {
     height: 35,
