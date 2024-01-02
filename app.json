@@ -20,7 +20,9 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "package": "com.aviraj.findPlace",
+        "googleMapsApiKey": "AIzaSyD99hCl6nd2sSjCN4PYXLCbOdgno15cdlk"
       }
     },
     "web": {

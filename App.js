@@ -20,6 +20,5 @@ const styles = StyleSheet.create({
     width: "100vw",
     justifyContent: 'center',
     flex: 1,
-    backgroundColor: Colors.white,
   },
 });

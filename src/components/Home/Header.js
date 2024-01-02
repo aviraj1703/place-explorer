@@ -28,25 +28,20 @@ export default function Header() {
 const styles = StyleSheet.create({
   header: {
     width: "100vw",
-    height: "20%",
-    minHeight: 180,
-    paddingTop: "15%",
-    display: "flex",
+    height: "5%",
+    marginTop: "15%",
     alignItems: "center",
+    zIndex: 1,
+    position: "relative"
   },
   container: {
-    height: "40%",
     width: "90%",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     borderRadius: 30,
-    shadowColor: Colors.cornsilk,
-    shadowOffset: { width: -2, height: 4 },
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
-    elevation: 1,
+    backgroundColor: Colors.white,
   },
   logo: {
     height: 35,
