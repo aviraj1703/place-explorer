@@ -1,6 +1,7 @@
-import { StyleSheet, View, Text } from "react-native";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import React, { useState } from "react";
+import { StyleSheet, View, Text, Button } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import React, { useState, useEffect } from "react";
+import * as Location from "expo-location";
 
 export default function GoogleMapView() {
   const [mapRegion, setMapRegion] = useState({
@@ -10,6 +11,24 @@ export default function GoogleMapView() {
     longitudeDelta: 0.01,
   });
 
+  const userLocation = async () => {
+    let { status } = Location.requestForegroundPermissionsAsync();
+    let location = await Location.getCurrentPositionAsync({
+      enableHighAccuracy: true,
+    });
+    // console.log(location);
+    setMapRegion({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    });
+  };
+
+  useEffect(() => {
+    userLocation();
+  }, []);
+
   return (
     <View style={styles.container}>
       <MapView
@@ -17,8 +36,14 @@ export default function GoogleMapView() {
         provider={PROVIDER_GOOGLE}
         region={mapRegion}
         showsUserLocation={true}
-        showsMyLocationButton={true}
-      ></MapView>
+        zoomControlEnabled={true}
+        zoomEnabled={true}
+        zoomTapEnabled={true}
+        mapPadding={{ top: 120, right: 15, bottom: 15, left: 15 }}
+      >
+        <Marker coordinate={mapRegion} title="Marker" />
+      </MapView>
+      {/* <Button title="Locate Me" onPress={userLocation}></Button> */}
     </View>
   );
 }
