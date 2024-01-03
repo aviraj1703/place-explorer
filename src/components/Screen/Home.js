@@ -6,7 +6,7 @@ import GoogleMapView from "../Home/GoogleMapView";
 export default function Home() {
   return (
     <View style={styles.container}>
-      {/* <Header /> */}
+      <Header />
       <GoogleMapView />
     </View>
   );
