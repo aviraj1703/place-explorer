@@ -1,7 +1,6 @@
 import { StyleSheet, View, Text, Button } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import React, { useState, useEffect } from "react";
-import * as Location from "expo-location";
+import React, { useState } from "react";
 
 export default function GoogleMapView() {
   const [mapRegion, setMapRegion] = useState({
@@ -11,23 +10,14 @@ export default function GoogleMapView() {
     longitudeDelta: 0.01,
   });
 
-  const userLocation = async () => {
-    let { status } = Location.requestForegroundPermissionsAsync();
-    let location = await Location.getCurrentPositionAsync({
-      enableHighAccuracy: true,
-    });
-    // console.log(location);
+  if (location !== null) {
     setMapRegion({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
       latitudeDelta: 0.01,
       longitudeDelta: 0.01,
     });
-  };
-
-  useEffect(() => {
-    userLocation();
-  }, []);
+  }
 
   return (
     <View style={styles.container}>
