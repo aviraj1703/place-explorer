@@ -1,30 +1,49 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import TabNavigation from "./src/components/Navigations/TabNavigation";
 import * as Location from "expo-location";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { UserLocationContext } from "./src/components/Context/UserLocationContext";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import Colors from "./src/components/Shared/Colors";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-
-  const userLocation = async () => {
-    let { status } = Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      setErrorMsg("Location access is denied :(");
-      return;
-    }
-    let location = await Location.getCurrentPositionAsync({});
-    setLocation(location);
-  };
+  const [fontsLoaded] = useFonts({
+    "Quicksand-SemiBold": require("./assets/Fonts/Quicksand/Quicksand-SemiBold.ttf"),
+    "CrimsonText-Regular": require("./assets/Fonts/Crimson/CrimsonText-Regular.ttf"),
+  });
 
   useEffect(() => {
-    userLocation();
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied :(");
+        console.warn(errorMsg);
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
   }, []);
 
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={onLayoutRootView}>
       <UserLocationContext.Provider value={{ location, setLocation }}>
         <NavigationContainer>
           <TabNavigation />
@@ -39,6 +58,7 @@ const styles = StyleSheet.create({
     height: "100vh",
     width: "100vw",
     justifyContent: "center",
+    backgroundColor: Colors.white,
     flex: 1,
   },
 });

@@ -27,12 +27,12 @@ export default function Header() {
 
 const styles = StyleSheet.create({
   header: {
-    width: "100vw",
+    width: "100%",
     height: "5%",
     marginTop: "15%",
     alignItems: "center",
-    zIndex: 1,
-    position: "relative"
+    // zIndex: 1,
+    // position: "relative"
   },
   container: {
     width: "90%",
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
   search: {
     height: 50,
     width: "75%",
-    padding: 5,
     fontSize: Size.searchFontSize,
+    fontFamily: "CrimsonText-Regular",
   },
   userImage: {
     height: 35,
