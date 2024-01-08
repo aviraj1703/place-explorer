@@ -20,12 +20,14 @@ export default function GoogleMapView() {
   }, [location]);
 
   const updateLocation = () => {
-    setMapRegion({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      latitudeDelta: 0.001,
-      longitudeDelta: 0.001,
-    });
+    if (location) {
+      setMapRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.001,
+        longitudeDelta: 0.001,
+      });
+    }
   };
 
   return (
@@ -41,7 +43,7 @@ export default function GoogleMapView() {
           zoomControlEnabled={true}
           zoomEnabled={true}
           zoomTapEnabled={true}
-          // mapPadding={{ top: 120, right: 15, bottom: 15, left: 15 }}
+          mapPadding={{ top: 15, bottom: 15 }}
         >
           {mapRegion && (
             <Marker
@@ -60,16 +62,13 @@ const styles = StyleSheet.create({
   container: {
     marginTop: "10%",
     width: "100%",
-    flex: 1,
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    // zIndex: 0,
-    // position: "absolute",
   },
   txt: {
     width: "90%",
-    fontFamily: "Quicksand-SemiBold",
+    fontFamily: "Quicksand-Bold",
     fontSize: Size.headingFontSize,
     marginBottom: 20,
     textAlign: "left",
@@ -80,6 +79,6 @@ const styles = StyleSheet.create({
   },
   map: {
     width: Dimensions.get("screen").width * 0.9,
-    height: Dimensions.get("screen").height * 0.3,
+    height: Dimensions.get("screen").height * 0.5,
   },
 });

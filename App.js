@@ -15,7 +15,9 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState(null);
   const [fontsLoaded] = useFonts({
     "Quicksand-SemiBold": require("./assets/Fonts/Quicksand/Quicksand-SemiBold.ttf"),
+    "Quicksand-Bold": require("./assets/Fonts/Quicksand/Quicksand-Bold.ttf"),
     "CrimsonText-Regular": require("./assets/Fonts/Crimson/CrimsonText-Regular.ttf"),
+    "SourceCodePro-Regular": require("./assets/Fonts/SourceCodePro/SourceCodePro-Regular.ttf")
   });
 
   useEffect(() => {
@@ -30,7 +32,7 @@ export default function App() {
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
     })();
-  }, []);
+  }, [location]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {

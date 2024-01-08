@@ -31,8 +31,6 @@ const styles = StyleSheet.create({
     height: "5%",
     marginTop: "15%",
     alignItems: "center",
-    // zIndex: 1,
-    // position: "relative"
   },
   container: {
     width: "90%",
@@ -42,6 +40,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 30,
     backgroundColor: Colors.white,
+    elevation: 1,
   },
   logo: {
     height: 35,
