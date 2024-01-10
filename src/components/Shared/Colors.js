@@ -4,4 +4,6 @@ export default {
   white: "#FFFFFF",
   crimson: "#DC143C",
   cornsilk: "#FFF8DC",
+  starGold: "#FFCA33",
+  placeDetail: "#FBF8F0",
 };

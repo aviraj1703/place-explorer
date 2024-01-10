@@ -16,8 +16,11 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     "Quicksand-SemiBold": require("./assets/Fonts/Quicksand/Quicksand-SemiBold.ttf"),
     "Quicksand-Bold": require("./assets/Fonts/Quicksand/Quicksand-Bold.ttf"),
+    "Quicksand-Regular": require("./assets/Fonts/Quicksand/Quicksand-Regular.ttf"),
     "CrimsonText-Regular": require("./assets/Fonts/Crimson/CrimsonText-Regular.ttf"),
-    "SourceCodePro-Regular": require("./assets/Fonts/SourceCodePro/SourceCodePro-Regular.ttf")
+    "SourceCodePro-Regular": require("./assets/Fonts/SourceCodePro/SourceCodePro-Regular.ttf"),
+    "Overlock-Regular": require("./assets/Fonts/Overlock/Overlock-Regular.ttf"),
+    "Overlock-Bold": require("./assets/Fonts/Overlock/Overlock-Bold.ttf"),
   });
 
   useEffect(() => {

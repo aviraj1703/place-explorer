@@ -5,6 +5,7 @@ import GoogleMapView from "../Home/GoogleMapView";
 import Category from "../Home/Category";
 import GlobalApi from "../Services/GlobalApi";
 import { useEffect } from "react";
+import PlaceList from "../Places/PlaceList";
 
 export default function Home() {
   const [placeDetails, setPlaceDetails] = useState(null);
@@ -15,15 +16,18 @@ export default function Home() {
 
   const getNearByPlaces = () => {
     GlobalApi.nearByPlcaes().then((response) => {
-      console.log(response.data.result);
+      console.log(response.data);
+      // setPlaceDetails(response.data.results);
+      setPlaceDetails(["Hii", "Hello"]);
     });
   };
 
   return (
     <View style={styles.container}>
       <Header />
-      <GoogleMapView />
+      <GoogleMapView placeList={placeDetails} />
       <Category />
+      {placeDetails && <PlaceList placeList={placeDetails} />}
     </View>
   );
 }

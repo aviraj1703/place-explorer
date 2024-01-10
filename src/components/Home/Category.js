@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React from "react";
 import { categoryDetails } from "../Shared/Categories";
-import Card from "../Shared/Card";
+import Card from "../Card/Card";
 
 export default function Category() {
   return (
@@ -37,7 +37,7 @@ export default function Category() {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    marginTop: "5%",
+    marginTop: "3%",
     alignItems: "center",
   },
   txt: {

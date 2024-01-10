@@ -4,7 +4,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { UserLocationContext } from "../Context/UserLocationContext";
 import Size from "../Shared/Size";
 
-export default function GoogleMapView() {
+export default function GoogleMapView({ placeList }) {
   const [mapRegion, setMapRegion] = useState(null);
   let { location } = useContext(UserLocationContext);
 
@@ -35,7 +35,7 @@ export default function GoogleMapView() {
       <Text style={styles.txt}>Top near by places!</Text>
       <View style={styles.mapBox}>
         <MapView
-          style={styles.map}
+          style={placeList ? styles.mapWithPlaces : styles.mapWithoutPlaces}
           provider={PROVIDER_GOOGLE}
           region={mapRegion}
           onRegionChange={updateLocation}
@@ -77,8 +77,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
   },
-  map: {
+  mapWithoutPlaces: {
     width: Dimensions.get("screen").width * 0.9,
     height: Dimensions.get("screen").height * 0.5,
+  },
+  mapWithPlaces: {
+    width: Dimensions.get("screen").width * 0.9,
+    height: Dimensions.get("screen").height * 0.25,
   },
 });

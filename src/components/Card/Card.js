@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet } from "react-native";
 import React from "react";
-import Colors from "./Colors";
+import Colors from "../Shared/Colors";
 
 export default function Card({ Category }) {
   return (
@@ -18,11 +18,11 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
-    margin: 3,
+    marginHorizontal: 3,
     borderRadius: 15,
     padding: 3,
     elevation: 1,
-    backgroundColor: Colors.cornsilk,
+    backgroundColor: Colors.placeDetail,
   },
   txt: {
     fontFamily: "SourceCodePro-Regular",

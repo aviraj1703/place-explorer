@@ -4,8 +4,6 @@ import { GOOGLE_MAPS_API_KEY } from "@env";
 const BASE_URL = "https://maps.googleapis.com/maps/api/place";
 const API_KEY = GOOGLE_MAPS_API_KEY;
 
-console.log(API_KEY);
-
 const nearByPlcaes = () =>
   axios.get(
     BASE_URL +
