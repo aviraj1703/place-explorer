@@ -21,7 +21,6 @@ export default function PlaceList({ placeList }) {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: "27%",
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
@@ -31,7 +30,7 @@ const styles = StyleSheet.create({
     width: "90%",
     fontFamily: "Quicksand-Regular",
     fontSize: 17,
-    textAlign: "left"
+    textAlign: "left",
   },
   list: {
     width: "95%",

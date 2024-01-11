@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 30,
     backgroundColor: Colors.white,
-    elevation: 1,
+    elevation: 2,
   },
   logo: {
     height: 35,

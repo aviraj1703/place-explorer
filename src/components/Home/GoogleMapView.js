@@ -60,7 +60,7 @@ export default function GoogleMapView({ placeList }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: "10%",
+    marginTop: "5%",
     width: "100%",
     display: "flex",
     justifyContent: "flex-start",

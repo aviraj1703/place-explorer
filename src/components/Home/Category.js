@@ -9,7 +9,7 @@ import React from "react";
 import { categoryDetails } from "../Shared/Categories";
 import Card from "../Card/Card";
 
-export default function Category() {
+export default function Category({setChosenCategory}) {
   return (
     <View style={styles.container}>
       <View style={{ width: "90%" }}>
@@ -20,7 +20,7 @@ export default function Category() {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              console.log(item.name)
+              setChosenCategory(item.name)
             }
           >
             <Card key={item.id} Category={item} />
@@ -37,7 +37,7 @@ export default function Category() {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    marginTop: "3%",
+    marginTop: "5%",
     alignItems: "center",
   },
   txt: {

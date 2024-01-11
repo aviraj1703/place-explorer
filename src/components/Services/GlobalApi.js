@@ -4,12 +4,18 @@ import { GOOGLE_MAPS_API_KEY } from "@env";
 const BASE_URL = "https://maps.googleapis.com/maps/api/place";
 const API_KEY = GOOGLE_MAPS_API_KEY;
 
-const nearByPlcaes = () =>
+const nearByPlcaes = (latitude, longitude, value) =>
   axios.get(
     BASE_URL +
       "/nearbysearch/json?" +
       "keyword=cruise" +
-      "&location=-33.8670522%2C151.1957362&radius=1500&type=restaurant" +
+      "&location=" +
+      latitude +
+      "," +
+      longitude +
+      "&radius=1500" +
+      "&type=" +
+      value +
       "&key=" +
       API_KEY
   );
