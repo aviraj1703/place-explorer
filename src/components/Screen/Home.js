@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, ScrollView } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React, { useContext, useState } from "react";
 import Header from "../Home/Header";
 import GoogleMapView from "../Home/GoogleMapView";
@@ -7,6 +7,7 @@ import GlobalApi from "../Services/GlobalApi";
 import { useEffect } from "react";
 import PlaceList from "../Places/PlaceList";
 import { UserLocationContext } from "../Context/UserLocationContext";
+import { ScrollView } from 'react-native-virtualized-view';
 
 export default function Home() {
   const [placeDetails, setPlaceDetails] = useState(null);
@@ -17,11 +18,10 @@ export default function Home() {
   }, []);
 
   const getNearByPlaces = (value) => {
-    if(location) {
+    if(location && value !== undefined) {
       GlobalApi.nearByPlcaes(location.coords.latitude, location.coords.longitude, value).then((response) => {
-        // console.log(response.data);
-        // setPlaceDetails(response.data.results);
-        setPlaceDetails(["Hii", "Hello", "Hii", "Hello"]);
+        console.log(location.coords.latitude, location.coords.longitude, value);
+        setPlaceDetails(response.data.results);
       });
     }
   };

@@ -8,13 +8,11 @@ const nearByPlcaes = (latitude, longitude, value) =>
   axios.get(
     BASE_URL +
       "/nearbysearch/json?" +
-      "keyword=cruise" +
       "&location=" +
       latitude +
       "," +
       longitude +
-      "&radius=1500" +
-      "&type=" +
+      "&radius=1500&type=" +
       value +
       "&key=" +
       API_KEY

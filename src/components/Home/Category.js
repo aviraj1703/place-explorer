@@ -20,7 +20,7 @@ export default function Category({setChosenCategory}) {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              setChosenCategory(item.name)
+              setChosenCategory(item.value)
             }
           >
             <Card key={item.id} Category={item} />
