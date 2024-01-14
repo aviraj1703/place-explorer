@@ -29,7 +29,7 @@ export default function Home() {
       });
     } else {
       const Location = await GetLocation.getLocation();
-      if (Location) {
+      if (Location && value !== undefined) {
         GlobalApi.nearByPlcaes(Location.coords.latitude, Location.coords.longitude, value).then((response) => {
           setPlaceDetails(response.data.results);
         });
