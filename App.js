@@ -28,7 +28,7 @@ export default function App() {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         setErrorMsg("Permission to access location was denied :(");
-        console.warn(errorMsg);
+        console.error(errorMsg);
         return;
       }
 

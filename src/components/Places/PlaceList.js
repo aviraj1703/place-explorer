@@ -8,12 +8,14 @@ export default function PlaceList({ placeList }) {
       <Text style={styles.txt}>
         Found {placeList.length} nearby places for you!
       </Text>
-      <FlatList
-        data={placeList}
-        renderItem={({ item }) => <PlaceItem place={item} />}
-        style={styles.list}
-        showsVerticalScrollIndicator={false}
-      />
+      {placeList.length > 0 && (
+        <FlatList
+          data={placeList}
+          renderItem={({ item }) => <PlaceItem place={item} />}
+          style={styles.list}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 }
@@ -37,5 +39,5 @@ const styles = StyleSheet.create({
     margin: "2%",
     paddingHorizontal: "3%",
     display: "flex",
-  }
+  },
 });

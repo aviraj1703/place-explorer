@@ -3,6 +3,8 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import React, { useContext, useState, useEffect } from "react";
 import { UserLocationContext } from "../Context/UserLocationContext";
 import Size from "../Shared/Size";
+import GetLocation from "../Services/GetLocation";
+import PlaceMarker from "../Places/PlaceMarker";
 
 export default function GoogleMapView({ placeList }) {
   const [mapRegion, setMapRegion] = useState(null);
@@ -13,20 +15,30 @@ export default function GoogleMapView({ placeList }) {
       setMapRegion({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
       });
     }
   }, [location]);
 
-  const updateLocation = () => {
+  const updateLocation = async () => {
     if (location) {
       setMapRegion({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
       });
+    } else {
+      const Location = await GetLocation.getLocation();
+      if (Location) {
+        setMapRegion({
+          latitude: Location.coords.latitude,
+          longitude: Location.coords.longitude,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        });
+      }
     }
   };
 
@@ -45,13 +57,16 @@ export default function GoogleMapView({ placeList }) {
           zoomTapEnabled={true}
           mapPadding={{ top: 15, bottom: 15 }}
         >
-          {mapRegion && (
+          {/* {mapRegion && (
             <Marker
               title={"You"}
               description={"It's your location"}
               coordinate={mapRegion}
             />
-          )}
+          )} */}
+          {placeList && placeList.map((item, index) => (
+            <PlaceMarker key={index} item={item} />
+          ))}
         </MapView>
       </View>
     </View>
