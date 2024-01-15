@@ -30,32 +30,16 @@ export default function PlaceItem({ place }) {
         <Text style={styles.name}>{place.name}</Text>
         <Text style={styles.address}>{place.vicinity}</Text>
         <View style={styles.rating}>
+          {place.rating !== undefined ? (
+            <Text style={styles.ratingDetails}>{place.rating}</Text>
+          ) : (
+            <Text style={styles.ratingDetails}>0</Text>
+          )}
           <MaterialCommunityIcons
             name="star"
-            size={25}
-            color={Colors.starGold}
+            size={13}
+            color={Colors.grey}
           />
-          {place.rating !== undefined ? (
-            <Text
-              style={{
-                fontFamily: "SourceCodePro-Regular",
-                fontSize: 13,
-                marginHorizontal: "2%",
-              }}
-            >
-              {place.rating}({place.user_ratings_total})
-            </Text>
-          ) : (
-            <Text
-              style={{
-                fontFamily: "SourceCodePro-Regular",
-                fontSize: 13,
-                marginHorizontal: "2%",
-              }}
-            >
-              0
-            </Text>
-          )}
         </View>
       </View>
     </View>
@@ -99,10 +83,18 @@ const styles = StyleSheet.create({
   },
   rating: {
     marginTop: "1%",
-    width: "50%",
+    width: 50,
     alignItems: "center",
     display: "flex",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     flexDirection: "row",
+    backgroundColor: Colors.cornsilk,
+    borderRadius: 5,
+    elevation: 1
+  },
+  ratingDetails: {
+    fontFamily: "SourceCodePro-Regular",
+    fontSize: 13,
+    color: Colors.grey,
   },
 });

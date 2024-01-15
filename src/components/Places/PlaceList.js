@@ -23,7 +23,11 @@ export default function PlaceList({ placeList }) {
         <FlatList
           data={placeList}
           renderItem={({ item, index }) => (
-            <TouchableOpacity key={index} onPress={() => onPlaceClick(item)}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              key={index}
+              onPress={() => onPlaceClick(item)}
+            >
               <PlaceItem key={index} place={item} />
             </TouchableOpacity>
           )}
