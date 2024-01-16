@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { GOOGLE_MAPS_API_KEY } from "@env";
 import Colors from "../Shared/Colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import Direction from "../Services/Direction";
+import Share from "../Services/Share";
 
 export default function PlaceDetailsItem({ place }) {
   return (
@@ -42,18 +44,28 @@ export default function PlaceDetailsItem({ place }) {
               : styles.statusClose
           }
         >
-          {place?.opening_hours?.open_now ? "Open" : "Closed"}
+          {place?.opening_hours?.open_now ? "[Open]" : "[Closed]"}
         </Text>
       )}
       <View style={styles.actions}>
-        <View style={styles.button}>
+        <TouchableOpacity
+          onPress={() => Direction.getDirections(place)}
+          style={styles.button}
+        >
           <FontAwesome5 name="directions" size={18} color={Colors.bayernBlue} />
           <Text style={styles.buttonText}>Direction</Text>
-        </View>
-        <View style={styles.button}>
-          <FontAwesome name="share-square-o" size={18} color={Colors.bayernBlue} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => Share.shareDirections(place)}
+          style={styles.button}
+        >
+          <FontAwesome
+            name="share-square-o"
+            size={18}
+            color={Colors.bayernBlue}
+          />
           <Text style={styles.buttonText}>Share</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -78,27 +90,28 @@ const styles = StyleSheet.create({
   ratingDetails: {
     fontFamily: "SourceCodePro-Regular",
     fontSize: 13,
-    marginLeft: "2%",
+    marginLeft: "1.5%",
   },
   photo: {
-    width: "93%",
+    width: "90%",
     height: 200,
-    marginVertical: "5%",
+    marginTop: "5%",
     borderRadius: 20,
   },
   address: {
+    marginTop: "5%",
+    marginBottom: "2%",
     fontSize: 15,
     fontFamily: "Overlock-Regular",
     color: Colors.grey,
-    margin: "1%",
   },
   statusOpen: {
-    fontSize: 17,
+    fontSize: 15,
     fontFamily: "Overlock-Regular",
     color: Colors.mediumSeaGreen,
   },
   statusClose: {
-    fontSize: 17,
+    fontSize: 15,
     fontFamily: "Overlock-Regular",
     color: Colors.crimson,
   },
@@ -108,7 +121,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   button: {
     margin: "2%",
@@ -121,7 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lighGray,
     borderRadius: 10,
     gap: 5,
-    elevation: 1
+    elevation: 1,
   },
   buttonText: {
     fontSize: 17,

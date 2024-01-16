@@ -64,9 +64,10 @@ export default function GoogleMapView({ placeList }) {
               coordinate={mapRegion}
             />
           )} */}
-          {placeList && placeList.map((item, index) => (
-            <PlaceMarker key={index} item={item} />
-          ))}
+          {placeList &&
+            placeList.map((item, index) => (
+              <PlaceMarker key={index} item={item} />
+            ))}
         </MapView>
       </View>
     </View>
@@ -75,7 +76,7 @@ export default function GoogleMapView({ placeList }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: "5%",
+    marginTop: "4%",
     width: "100%",
     display: "flex",
     justifyContent: "flex-start",
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
     width: "90%",
     fontFamily: "Quicksand-Bold",
     fontSize: Size.headingFontSize,
-    marginBottom: 20,
+    marginBottom: 15,
     textAlign: "left",
   },
   mapBox: {
