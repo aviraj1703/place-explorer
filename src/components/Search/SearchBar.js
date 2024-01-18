@@ -1,9 +1,10 @@
 import { View, Text, Image, TextInput, StyleSheet } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Colors from "../Shared/Colors";
 import Size from "../Shared/Size";
 
-export default function SearchBar() {
+export default function SearchBar({ setSearchText }) {
+  const [searchInput, setSearchInput] = useState();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -15,6 +16,8 @@ export default function SearchBar() {
           placeholder="Search here..."
           style={styles.search}
           selectionColor={Colors.grey}
+          onChangeText={(value) => setSearchInput(value)}
+          onSubmitEditing={() => setSearchText(searchInput)}
         />
         <Image
           source={require("../../../assets/Aviraj.jpg")}

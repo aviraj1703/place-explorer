@@ -6,7 +6,7 @@ import Size from "../Shared/Size";
 import GetLocation from "../Services/GetLocation";
 import PlaceMarker from "../Places/PlaceMarker";
 
-export default function GoogleMapViewFull() {
+export default function GoogleMapViewFull({ placeList }) {
   const [mapRegion, setMapRegion] = useState(null);
   let { location } = useContext(UserLocationContext);
 
