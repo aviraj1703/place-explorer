@@ -1,6 +1,6 @@
 import { Platform, Linking } from "react-native";
 
-const getDirections = (place) => {
+const getDirections = (place, placeAddress) => {
   const url = Platform.select({
     ios:
       "maps:" +
@@ -8,14 +8,14 @@ const getDirections = (place) => {
       "," +
       place.geometry.location.lng +
       "?q=" +
-      place.vicinity,
+      placeAddress,
     android:
       "geo:" +
       place.geometry.location.lat +
       "," +
       place.geometry.location.lng +
       "?q=" +
-      place.vicinity,
+      placeAddress,
   });
 
   Linking.openURL(url);

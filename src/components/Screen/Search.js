@@ -6,7 +6,7 @@ import SearchResults from "../Search/SearchResults";
 import GlobalApi from "../Services/GlobalApi";
 
 export default function Search() {
-  const [placeList, setPlaceList] = useState([]);
+  const [placeList, setPlaceList] = useState(null);
 
   useEffect(() => {
     GetNearBySearchPlace("restaurant");

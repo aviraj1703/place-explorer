@@ -8,6 +8,9 @@ import Direction from "../Services/Direction";
 import Share from "../Services/Share";
 
 export default function PlaceDetailsItem({ place }) {
+  let placeAddress = place.vicinity;
+  if (placeAddress === undefined)
+    placeAddress = place.vicinity ? place.vicinity : place.formatted_address;
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{place.name}</Text>
@@ -35,7 +38,7 @@ export default function PlaceDetailsItem({ place }) {
           style={styles.photo}
         />
       )}
-      <Text style={styles.address}>{place.vicinity}</Text>
+      <Text style={styles.address}>{placeAddress}</Text>
       {place?.opening_hours && (
         <Text
           style={
@@ -49,14 +52,14 @@ export default function PlaceDetailsItem({ place }) {
       )}
       <View style={styles.actions}>
         <TouchableOpacity
-          onPress={() => Direction.getDirections(place)}
+          onPress={() => Direction.getDirections(place, placeAddress)}
           style={styles.button}
         >
           <FontAwesome5 name="directions" size={18} color={Colors.bayernBlue} />
           <Text style={styles.buttonText}>Direction</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => Share.shareDirections(place)}
+          onPress={() => Share.shareDirections(place, placeAddress)}
           style={styles.button}
         >
           <FontAwesome

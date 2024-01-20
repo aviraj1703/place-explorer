@@ -52,7 +52,7 @@ export default function GoogleMapViewFull({ placeList }) {
         zoomControlEnabled={true}
         zoomEnabled={true}
         zoomTapEnabled={true}
-        mapPadding={{ top: 130, bottom: 80 }}
+        mapPadding={{ top: 130, bottom: 350 }}
       >
         {/* {mapRegion && (
             <Marker
@@ -61,10 +61,10 @@ export default function GoogleMapViewFull({ placeList }) {
               coordinate={mapRegion}
             />
           )} */}
-        {/* {placeList &&
-            placeList.map((item, index) => (
-              <PlaceMarker key={index} item={item} />
-            ))} */}
+        {placeList &&
+          placeList.map((item, index) => (
+            <PlaceMarker key={index} item={item} />
+          ))}
       </MapView>
     </View>
   );
