@@ -10,16 +10,23 @@ import {
 import React, { useState } from "react";
 import { Fontisto, Ionicons, Feather } from "@expo/vector-icons";
 import Colors from "../Shared/Colors";
-import Size from "../Shared/Size";
+import validator from "validator";
 import { Checkbox } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Login() {
-  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [agree, setAgree] = useState(false);
   const [show, setShow] = useState(false);
-  const loginAction = () => {};
-  const registrationPage = () => {};
+  const navigator = useNavigation();
+  const loginAction = () => {
+    setEmail(email.toLowerCase());
+    const isValidEmail = validator.isEmail(email);
+    if (!isValidEmail) {
+      Alert.alert("Please enter a valid email");
+      return;
+    }
+  };
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -30,19 +37,19 @@ export default function Login() {
         <View style={styles.loginPage}>
           <Text style={styles.heading}>Hey, welcome back!</Text>
           <View style={styles.field}>
-            <Fontisto name="email" size={20} color="black" />
+            <Fontisto name="email" size={20} color={Colors.black} />
             <TextInput
               placeholder="email@address.com"
-              value={userName}
+              value={email}
               style={styles.input}
               selectionColor={Colors.grey}
-              onChangeText={(userName) => setUserName(userName)}
+              onChangeText={(email) => setEmail(email)}
               autoCapitalize="none"
               autoCorrect={false}
             />
           </View>
           <View style={styles.field}>
-            <Ionicons name="lock-closed-outline" size={20} color="black" />
+            <Ionicons name="lock-closed-outline" size={20} color={Colors.black} />
             <TextInput
               placeholder="Password"
               value={password}
@@ -55,27 +62,16 @@ export default function Login() {
             />
             <TouchableOpacity onPress={() => setShow(!show)}>
               {!show ? (
-                <Feather name="eye-off" size={20} color="black" />
+                <Feather name="eye-off" size={20} color={Colors.black} />
               ) : (
-                <Feather name="eye" size={20} color="black" />
+                <Feather name="eye" size={20} color={Colors.black} />
               )}
             </TouchableOpacity>
-          </View>
-          <View style={styles.terms}>
-            <Checkbox
-              status={agree ? "checked" : "unchecked"}
-              onPress={() => setAgree(!agree)}
-              color={agree ? Colors.bayernBlue : undefined}
-            />
-            <Text style={styles.agreeText}>
-              I agree to the terms and conditions.
-            </Text>
           </View>
           <View style={styles.button}>
             <Button
               title="Sign In"
-              disabled={!agree}
-              color={agree && Colors.bayernBlue}
+              color={Colors.bayernBlue}
               onPress={loginAction}
             />
           </View>
@@ -86,7 +82,7 @@ export default function Login() {
             <Button
               title="Sign Up"
               color={Colors.bayernBlue}
-              onPress={registrationPage}
+              onPress={() => navigator.navigate("Register")}
             />
           </View>
         </View>
@@ -97,7 +93,7 @@ export default function Login() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   loginPage: {
     width: "100%",
@@ -105,11 +101,11 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-around",
-},
+  },
   heading: {
     width: "90%",
     fontFamily: "Quicksand-Bold",
-    fontSize: Size.headingFontSize,
+    fontSize: 25,
     color: Colors.bayernBlue,
     marginBottom: 30,
   },
@@ -128,8 +124,8 @@ const styles = StyleSheet.create({
     width: "80%",
     margin: 10,
     padding: 5,
-    fontSize: Size.searchFontSize,
-    fontFamily: "CrimsonText-Regular",
+    fontSize: 15,
+    fontFamily: "Quicksand-Regular",
   },
   terms: {
     width: "93.5%",

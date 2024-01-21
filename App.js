@@ -7,7 +7,7 @@ import { UserLocationContext } from "./src/components/Context/UserLocationContex
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Colors from "./src/components/Shared/Colors";
-import Login from "./src/components/Screen/Login";
+import Authenticate from "./src/components/Screen/Authenticate";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -50,12 +50,12 @@ export default function App() {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <Login />
-      {/* <UserLocationContext.Provider value={{ location, setLocation }}>
+      <UserLocationContext.Provider value={{ location, setLocation }}>
         <NavigationContainer>
+          <Authenticate />
           <TabNavigation />
         </NavigationContainer>
-      </UserLocationContext.Provider> */}
+      </UserLocationContext.Provider>
     </View>
   );
 }
