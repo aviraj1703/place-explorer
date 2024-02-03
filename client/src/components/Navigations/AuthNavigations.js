@@ -3,21 +3,27 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import Login from "../Authenticate/Login";
 import Registration from "../Authenticate/Registration";
+import ResetPassword from "../Authenticate/ResetPassword";
 
-export default function Authenticate() {
-  const Stack = createStackNavigator();
+export default function AuthNavigations() {
+  const authStack = createStackNavigator();
   return (
-    <Stack.Navigator>
-      <Stack.Screen
+    <authStack.Navigator>
+      <authStack.Screen
         name="Login"
         options={{ headerShown: false }}
         component={Login}
       />
-      <Stack.Screen
+      <authStack.Screen
         name="Register"
         options={{ headerShown: false }}
         component={Registration}
       />
-    </Stack.Navigator>
+      <authStack.Screen
+        name="Reset"
+        options={{ headerShown: false }}
+        component={ResetPassword}
+      />
+    </authStack.Navigator>
   );
 }

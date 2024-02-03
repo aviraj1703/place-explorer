@@ -1,19 +1,14 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { StyleSheet, Text, View } from "react-native";
-import TabNavigation from "./src/components/Navigations/TabNavigation";
-import * as Location from "expo-location";
-import React, { useState, useEffect, useCallback } from "react";
-import { UserLocationContext } from "./src/components/Context/UserLocationContext";
+import { StyleSheet, View } from "react-native";
+import React, { useCallback } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Colors from "./src/components/Shared/Colors";
-import Authenticate from "./src/components/Screen/Authenticate";
+import MainStackNavigation from "./src/components/Navigations/MainStackNavigation";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
   const [fontsLoaded] = useFonts({
     "Quicksand-SemiBold": require("./assets/Fonts/Quicksand/Quicksand-SemiBold.ttf"),
     "Quicksand-Bold": require("./assets/Fonts/Quicksand/Quicksand-Bold.ttf"),
@@ -23,20 +18,6 @@ export default function App() {
     "Overlock-Regular": require("./assets/Fonts/Overlock/Overlock-Regular.ttf"),
     "Overlock-Bold": require("./assets/Fonts/Overlock/Overlock-Bold.ttf"),
   });
-
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied :(");
-        console.error(errorMsg);
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-  }, [location]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -50,12 +31,9 @@ export default function App() {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <UserLocationContext.Provider value={{ location, setLocation }}>
-        <NavigationContainer>
-          <Authenticate />
-          <TabNavigation />
-        </NavigationContainer>
-      </UserLocationContext.Provider>
+      <NavigationContainer>
+        <MainStackNavigation />
+      </NavigationContainer>
     </View>
   );
 }

@@ -19,6 +19,7 @@ export default function Home() {
   }, []);
 
   const getNearByPlaces = async (value) => {
+    if(value === undefined) return;
     if (location) {
       GlobalApi.nearByPlcaes(
         location.coords.latitude,
@@ -29,7 +30,7 @@ export default function Home() {
       });
     } else {
       const Location = await GetLocation.getLocation();
-      if (Location && value !== undefined) {
+      if (Location) {
         GlobalApi.nearByPlcaes(Location.coords.latitude, Location.coords.longitude, value).then((response) => {
           setPlaceDetails(response.data.results);
         });

@@ -19,7 +19,7 @@ export default function GoogleMapView({ placeList }) {
         longitudeDelta: 0.005,
       });
     }
-  }, [location]);
+  }, []);
 
   const updateLocation = async () => {
     if (location) {

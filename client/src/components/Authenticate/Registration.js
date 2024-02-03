@@ -9,31 +9,80 @@ import {
   Alert,
 } from "react-native";
 import React, { useState } from "react";
-import { Fontisto, Ionicons, Feather } from "@expo/vector-icons";
+import { Fontisto, Ionicons, Feather, FontAwesome } from "@expo/vector-icons";
 import Colors from "../Shared/Colors";
 import { Checkbox } from "react-native-paper";
 import validator from "validator";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { BASE_URL } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Registration() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
   const [agree, setAgree] = useState(false);
   const [show, setShow] = useState(false);
   const navigator = useNavigation();
-  const registrationPage = () => {
+
+  const enableSignUpButton = () => {
+    if (name !== "" && email !== "" && password !== "" && rePassword !== "")
+      setAgree(!agree);
+    else {
+      Alert.alert("Please make sure that none of the fields is empty.");
+      return;
+    }
+  };
+
+  const registrationPage = async () => {
     setEmail(email.toLowerCase());
     const isValidEmail = validator.isEmail(email);
+    if (name.length < 3) {
+      Alert.alert("Name must contain atleast 3 letters.");
+      return;
+    }
     if (!isValidEmail) {
-      Alert.alert("Please enter a valid email");
+      Alert.alert("Please enter a valid email.");
+      return;
+    }
+    if (password.length === 0) {
+      Alert.alert("Password can not be empty.");
       return;
     }
     if (password !== rePassword) {
       Alert.alert("Re entered password is not matching.");
       return;
     }
+
+    const response = await axios.post(
+      `${BASE_URL}/signup`,
+      {
+        name: name,
+        email: email,
+        password: password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.data.success) {
+      AsyncStorage.setItem("token", response.data.authToken);
+      navigator.navigate("Login");
+    } else {
+      Alert.alert(`${response.data.message}`);
+      setName("");
+      setEmail("");
+      setPassword("");
+      setRePassword("");
+      return;
+    }
   };
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -43,6 +92,18 @@ export default function Registration() {
       >
         <View style={styles.loginPage}>
           <Text style={styles.heading}>Explore the places with us!</Text>
+          <View style={styles.field}>
+            <FontAwesome name="user-o" size={20} color={Colors.black} />
+            <TextInput
+              placeholder="Bhupendra Jogi"
+              value={name}
+              style={styles.input}
+              selectionColor={Colors.grey}
+              onChangeText={(name) => setName(name)}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+          </View>
           <View style={styles.field}>
             <Fontisto name="email" size={20} color={Colors.black} />
             <TextInput
@@ -99,7 +160,7 @@ export default function Registration() {
           <View style={styles.terms}>
             <Checkbox
               status={agree ? "checked" : "unchecked"}
-              onPress={() => setAgree(!agree)}
+              onPress={enableSignUpButton}
               color={agree ? Colors.bayernBlue : undefined}
             />
             <Text style={styles.agreeText}>

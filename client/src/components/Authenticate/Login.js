@@ -6,24 +6,50 @@ import {
   TouchableOpacity,
   Button,
   ImageBackground,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { Fontisto, Ionicons, Feather } from "@expo/vector-icons";
 import Colors from "../Shared/Colors";
 import validator from "validator";
-import { Checkbox } from "react-native-paper";
+import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import { BASE_URL } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const navigator = useNavigation();
-  const loginAction = () => {
+
+  const loginAction = async () => {
     setEmail(email.toLowerCase());
     const isValidEmail = validator.isEmail(email);
     if (!isValidEmail) {
       Alert.alert("Please enter a valid email");
+      return;
+    }
+    const response = await axios.post(
+      `${BASE_URL}/signin`,
+      {
+        email: email,
+        password: password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response.data);
+    if (response.data.success) {
+      AsyncStorage.setItem("token", response.data.authToken);
+      navigator.navigate("Main_Screen");
+    } else {
+      Alert.alert(`${response.data.message}`);
+      setEmail("");
+      setPassword("");
       return;
     }
   };
@@ -49,7 +75,11 @@ export default function Login() {
             />
           </View>
           <View style={styles.field}>
-            <Ionicons name="lock-closed-outline" size={20} color={Colors.black} />
+            <Ionicons
+              name="lock-closed-outline"
+              size={20}
+              color={Colors.black}
+            />
             <TextInput
               placeholder="Password"
               value={password}
@@ -74,6 +104,17 @@ export default function Login() {
               color={Colors.bayernBlue}
               onPress={loginAction}
             />
+          </View>
+          <View style={styles.forgot}>
+            {/* <Checkbox
+              status={agree ? "checked" : "unchecked"}
+              onPress={enableSignUpButton}
+              color={agree ? Colors.bayernBlue : undefined}
+            /> */}
+            <Text style={styles.agreeText}>Forgot password?&nbsp;</Text>
+            <TouchableOpacity onPress={() => navigator.navigate("Reset")}>
+              <Text style={styles.resetText}>Reset now.</Text>
+            </TouchableOpacity>
           </View>
           <Text style={{ fontFamily: "Quicksand-Regular", fontSize: 15 }}>
             Not a member?
@@ -127,18 +168,24 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "Quicksand-Regular",
   },
-  terms: {
-    width: "93.5%",
+  forgot: {
+    width: "90%",
     display: "flex",
     justifyContent: "flex-start",
     gap: 2,
-    marginVertical: 20,
+    marginBottom: 25,
     flexDirection: "row",
     alignItems: "center",
   },
   agreeText: {
     fontSize: 15,
     fontFamily: "Quicksand-Regular",
+  },
+  resetText: {
+    fontSize: 15,
+    fontFamily: "Quicksand-Regular",
+    color: Colors.bayernBlue,
+    textDecorationLine: "underline",
   },
   button: {
     width: "90%",

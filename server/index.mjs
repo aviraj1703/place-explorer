@@ -11,10 +11,6 @@ const port = process.env.PORT;
 app.use(bodyParser.json());
 app.use(router);
 
-app.get("/", (req, res) => {
-  res.send(`Node server is running...`);
-});
-
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
