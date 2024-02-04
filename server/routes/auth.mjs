@@ -2,13 +2,15 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 import "dotenv/config";
+import { sendEmail } from "../services/nodemailer.mjs";
 
 const User = mongoose.model("User");
 const secret = process.env.JWT_SECRET;
 
-export const signUp = async (request, response) => {
+// Send verification code via nodemailer
+export const nodeMailer = async (request, response) => {
   // Get the details
-  const { name, email, password } = request.body;
+  const { name, email } = request.body;
 
   // Check for user existance
   const userExists = await User.findOne({ email: email });
@@ -21,6 +23,34 @@ export const signUp = async (request, response) => {
     });
   }
 
+  // Send verification code
+  const verificationCode = Math.floor(100000 + Math.random() * 900000);
+  const message = {
+    subject: "Place Explorer account verification",
+    text: `<p>Hi <b>${name}</b> this is your 6 digits verification code: <b>${verificationCode}</b></p>`,
+  };
+  const isEmailSent = await sendEmail(email, message);
+
+  if (isEmailSent)
+    return response.status(200).json({
+      success: true,
+      pin: verificationCode,
+      message: "6 digits verification code has been sent to your email.",
+      severity: "success",
+    });
+
+  return response.status(500).json({
+    success: false,
+    message: "Internal server error.",
+    severity: "warning",
+  });
+};
+
+// Register user
+export const signUp = async (request, response) => {
+  // Get the details
+  const { name, email, password } = request.body;
+
   // Create Hashing of password
   const salt = await bcrypt.genSalt(10);
   const secPass = await bcrypt.hash(password, salt);
@@ -30,6 +60,7 @@ export const signUp = async (request, response) => {
     name,
     email,
     password: secPass,
+    isVarified: true,
   });
 
   try {
@@ -44,7 +75,6 @@ export const signUp = async (request, response) => {
       secret
     );
 
-    console.log("Successfully registered..!");
     return response.status(201).json({
       authToken: `Bearer ${jwt_token}`,
       success: true,
@@ -52,7 +82,6 @@ export const signUp = async (request, response) => {
       severity: "success",
     });
   } catch (error) {
-    console.log("Error aa gai bhaiya..!");
     return response.status(500).json({
       success: false,
       message: `${error}`,
@@ -61,6 +90,7 @@ export const signUp = async (request, response) => {
   }
 };
 
+// Login user
 export const signIn = async (request, response) => {
   // Get the details
   const { email, password } = request.body;
@@ -75,11 +105,20 @@ export const signIn = async (request, response) => {
     });
   }
 
+  // Check for user verification
+  if (!userExists.isVarified)
+    return response.status(422).json({
+      success: false,
+      message:
+        "Please verify your account, mail has been sent to you on your mail id.",
+      severity: "warning",
+    });
+
   // Compare hashed password
   try {
     bcrypt.compare(password, userExists.password, (err, result) => {
       if (!result || err)
-        return response.status(422).json({
+        return response.status(401).send({
           success: false,
           message: "Invalid credentials.",
           severity: "warning",
@@ -109,6 +148,7 @@ export const signIn = async (request, response) => {
   }
 };
 
+// Check user verification status
 export const verifyUser = async (request, response) => {
   // Get the details
   const { email } = request.body;
@@ -122,6 +162,16 @@ export const verifyUser = async (request, response) => {
       severity: "warning",
     });
   }
+
+  // Check for user verification
+  if (!userExists.isVarified)
+    return response.status(422).json({
+      success: false,
+      message:
+        "Please verify your account, mail has been sent to you on your mail id.",
+      severity: "warning",
+    });
+
   return response.status(200).json({
     success: true,
     message: "User exists.",
@@ -129,6 +179,7 @@ export const verifyUser = async (request, response) => {
   });
 };
 
+// Reset Password
 export const resetPassword = async (request, response) => {
   // Get the details
   const { email, password } = request.body;

@@ -30,26 +30,30 @@ export default function Login() {
       Alert.alert("Please enter a valid email");
       return;
     }
-    const response = await axios.post(
-      `${BASE_URL}/signin`,
-      {
-        email: email,
-        password: password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
+    try{
+      const response = await axios.post(
+        `${BASE_URL}/signin`,
+        {
+          email: email,
+          password: password,
         },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data.success) {
+        AsyncStorage.setItem("token", response.data.authToken);
+        navigator.navigate("Main_Screen");
+      } else {
+        Alert.alert(`${response.data.message}`);
+        setEmail("");
+        setPassword("");
+        return;
       }
-    );
-    console.log(response.data);
-    if (response.data.success) {
-      AsyncStorage.setItem("token", response.data.authToken);
-      navigator.navigate("Main_Screen");
-    } else {
-      Alert.alert(`${response.data.message}`);
-      setEmail("");
-      setPassword("");
+    } catch (error) {
+      Alert.alert(error.response.data.message);
       return;
     }
   };

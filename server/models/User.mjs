@@ -14,6 +14,11 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  isVarified: {
+    type: Boolean,
+    required: true,
+    default: false,
+  }
 });
 
 mongoose.model("User", userSchema);

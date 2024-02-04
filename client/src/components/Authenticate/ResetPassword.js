@@ -29,23 +29,28 @@ export default function ResetPassword() {
   const verifyUser = async () => {
     setEmail(email.toLowerCase());
 
-    const response = await axios.post(
-      `${BASE_URL}/verify`,
-      {
-        email: email,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/verify`,
+        {
+          email: email,
         },
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    if (response.data.success) {
-      setExist(true);
-    } else {
-      Alert.alert(`${response.data.message}`);
-      setEmail("");
+      if (response.data.success) {
+        setExist(true);
+      } else {
+        Alert.alert(`${response.data.message}`);
+        setEmail("");
+        return;
+      }
+    } catch (error) {
+      Alert.alert(error.response.data.message);
       return;
     }
   };
