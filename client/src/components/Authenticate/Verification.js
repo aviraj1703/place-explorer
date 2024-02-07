@@ -18,47 +18,48 @@ import axios from "axios";
 import { BASE_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function ResetPassword() {
-  const [password, setPassword] = useState("");
-  const [rePassword, setRePassword] = useState("");
-  const [show, setShow] = useState(false);
-  const [email, setEmail] = useState("");
+export default function Verification() {
+  const [user, setUser] = useState(null);
+  const [code, setCode] = useState();
   const param = useRoute().params;
   const navigator = useNavigation();
 
   useEffect(() => {
-    setEmail(param.email);
-  }, [email]);
+    setUser(param.user);
+  }, [user]);
 
-  const setNewPassword = async () => {
-    if (password.length === 0) {
-      Alert.alert("Password can not be empty.");
+  const verifyUser = async () => {
+    if (user.pin !== Number(code)) {
+      Alert.alert("This pin is invalid.");
       return;
     }
-    if (password !== rePassword) {
-      Alert.alert("Re entered password is not matching.");
-      return;
-    }
-    const response = await axios.post(
-      `${BASE_URL}/reset`,
-      {
-        email: email,
-        password: password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+    if (user.isItSingUp) {
+      try {
+        const response = await axios.post(
+          `${BASE_URL}/signup`,
+          {
+            name: user.name,
+            email: user.email,
+            password: user.password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        AsyncStorage.setItem("token", response.data.authToken);
+        Alert.alert("Your registration is successful.");
+        navigator.navigate("Login");
+        return;
+      } catch (error) {
+        Alert.alert(error.response.data.message);
+        return;
       }
-    );
-
-    if (response.data.success) {
-      Alert.alert(response.data.message);
-      navigator.navigate("Login");
-    } else {
-      Alert.alert(`${response.data.message}`);
-      return;
     }
+    navigator.navigate("Reset", { email: user.email });
+    return;
   };
 
   return (
@@ -69,7 +70,9 @@ export default function ResetPassword() {
         resizeMode="cover"
       >
         <View style={styles.loginPage}>
-          <Text style={styles.heading}>Just one more step to go!</Text>
+          <Text style={styles.heading}>
+            Verification pin has been sent to your email id.
+          </Text>
           <View style={styles.field}>
             <Ionicons
               name="lock-closed-outline"
@@ -77,45 +80,20 @@ export default function ResetPassword() {
               color={Colors.black}
             />
             <TextInput
-              placeholder="Password"
-              value={password}
+              placeholder="Enter 6 digit pin"
+              value={code}
               style={styles.input}
               selectionColor={Colors.grey}
-              onChangeText={(password) => setPassword(password)}
-              autoCapitalize="none"
-              autoCorrect={false}
-              secureTextEntry={!show}
-            />
-            <TouchableOpacity onPress={() => setShow(!show)}>
-              {!show ? (
-                <Feather name="eye-off" size={20} color={Colors.black} />
-              ) : (
-                <Feather name="eye" size={20} color={Colors.black} />
-              )}
-            </TouchableOpacity>
-          </View>
-          <View style={styles.field}>
-            <Ionicons
-              name="lock-closed-outline"
-              size={20}
-              color={Colors.black}
-            />
-            <TextInput
-              placeholder="Re-enter Password"
-              value={rePassword}
-              style={styles.input}
-              selectionColor={Colors.grey}
-              onChangeText={(rePassword) => setRePassword(rePassword)}
-              autoCapitalize="none"
-              autoCorrect={false}
-              secureTextEntry={true}
+              onChangeText={(code) => setCode(code)}
+              maxLength={6}
+              keyboardType="numeric"
             />
           </View>
           <View style={styles.button}>
             <Button
-              title="Reset Password"
+              title="Verify me"
               color={Colors.bayernBlue}
-              onPress={setNewPassword}
+              onPress={verifyUser}
             />
           </View>
         </View>

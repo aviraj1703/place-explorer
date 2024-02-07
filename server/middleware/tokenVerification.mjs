@@ -9,13 +9,22 @@ export const verfyToken = (request, response, next) => {
   const { authorization } = request.headers;
 
   if (!authorization) {
-    return response.status(401).send("Unauthorized access.");
+    return response.status(401).json({
+      success: false,
+      message: "Unauthorized access.",
+      severity: "error",
+    });
   }
 
   const bearer_token = authorization.replace("Bearer ", "");
 
   Jwt.verify(bearer_token, secret, (err, payload) => {
-    if (err) return response.status(401).send("Unauthorized access.");
+    if (err)
+      return response.status(401).json({
+        success: false,
+        message: "Unauthorized access.",
+        severity: "error",
+      });
     const { id } = payload;
     User.findById(id).then((userData) => {
       request.user = userData;

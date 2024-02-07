@@ -13,11 +13,6 @@ const userSchema = mongoose.Schema({
   password: {
     type: String,
     required: true,
-  },
-  isVarified: {
-    type: Boolean,
-    required: true,
-    default: false,
   }
 });
 

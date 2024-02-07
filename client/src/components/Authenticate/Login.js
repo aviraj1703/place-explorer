@@ -110,13 +110,8 @@ export default function Login() {
             />
           </View>
           <View style={styles.forgot}>
-            {/* <Checkbox
-              status={agree ? "checked" : "unchecked"}
-              onPress={enableSignUpButton}
-              color={agree ? Colors.bayernBlue : undefined}
-            /> */}
             <Text style={styles.agreeText}>Forgot password?&nbsp;</Text>
-            <TouchableOpacity onPress={() => navigator.navigate("Reset")}>
+            <TouchableOpacity onPress={() => navigator.navigate("Forgot")}>
               <Text style={styles.resetText}>Reset now.</Text>
             </TouchableOpacity>
           </View>

@@ -10,24 +10,28 @@ const secret = process.env.JWT_SECRET;
 // Send verification code via nodemailer
 export const nodeMailer = async (request, response) => {
   // Get the details
-  const { name, email } = request.body;
+  const { email, isVarified } = request.body;
 
   // Check for user existance
   const userExists = await User.findOne({ email: email });
-  if (userExists) {
-    console.log("User exists");
+  if (userExists && !isVarified)
     return response.status(422).json({
       success: false,
       message: "User already exists.",
       severity: "warning",
     });
-  }
+  else if (!userExists && isVarified)
+    return response.status(404).json({
+      success: false,
+      message: "User does not exists.",
+      severity: "warning",
+    });
 
   // Send verification code
   const verificationCode = Math.floor(100000 + Math.random() * 900000);
   const message = {
     subject: "Place Explorer account verification",
-    text: `<p>Hi <b>${name}</b> this is your 6 digits verification code: <b>${verificationCode}</b></p>`,
+    text: `<p>6 digit verification code: <b>${verificationCode}</b></p>`,
   };
   const isEmailSent = await sendEmail(email, message);
 
@@ -35,7 +39,8 @@ export const nodeMailer = async (request, response) => {
     return response.status(200).json({
       success: true,
       pin: verificationCode,
-      message: "6 digits verification code has been sent to your email.",
+      isItSingUp: !isVarified,
+      message: "6 digit verification code has been sent to your email.",
       severity: "success",
     });
 
@@ -60,7 +65,6 @@ export const signUp = async (request, response) => {
     name,
     email,
     password: secPass,
-    isVarified: true,
   });
 
   try {
@@ -105,15 +109,6 @@ export const signIn = async (request, response) => {
     });
   }
 
-  // Check for user verification
-  if (!userExists.isVarified)
-    return response.status(422).json({
-      success: false,
-      message:
-        "Please verify your account, mail has been sent to you on your mail id.",
-      severity: "warning",
-    });
-
   // Compare hashed password
   try {
     bcrypt.compare(password, userExists.password, (err, result) => {
@@ -149,34 +144,23 @@ export const signIn = async (request, response) => {
 };
 
 // Check user verification status
-export const verifyUser = async (request, response) => {
-  // Get the details
-  const { email } = request.body;
+export const getUser = async (request, response) => {
+  // Get the object id from jwt verification
+  const _id = request.id;
 
-  // Check for user existance
-  const userExists = await User.findOne({ email: email });
-  if (!userExists) {
-    return response.status(422).json({
-      success: false,
-      message: "User does not exist.",
-      severity: "warning",
+  // Send user info in response
+  try {
+    const user = await User.findOne({ _id });
+    return response.json({
+      success: true,
+      id: _id,
+      name: user.name,
+      email: user.email,
+      severity: "success",
     });
+  } catch (error) {
+    return response.status(500).json({ success: false, message: error });
   }
-
-  // Check for user verification
-  if (!userExists.isVarified)
-    return response.status(422).json({
-      success: false,
-      message:
-        "Please verify your account, mail has been sent to you on your mail id.",
-      severity: "warning",
-    });
-
-  return response.status(200).json({
-    success: true,
-    message: "User exists.",
-    severity: "success",
-  });
 };
 
 // Reset Password
@@ -184,13 +168,37 @@ export const resetPassword = async (request, response) => {
   // Get the details
   const { email, password } = request.body;
 
-  // Check for user existance
+  // Get the existing user
   const userExists = await User.findOne({ email: email });
-  // if (!userExists) {
-  //   return response.status(422).json({
-  //     success: false,
-  //     message: "User does not exist.",
-  //     severity: "warning",
-  //   });
-  // }
+
+  // Create Hashing of password
+  const salt = await bcrypt.genSalt(10);
+  const secPass = await bcrypt.hash(password, salt);
+
+  // Change password value
+  userExists.password = secPass;
+
+  try {
+    // Save user
+    await userExists.save();
+
+    // Send confirmation mail
+    const message = {
+      subject: "Place Explorer password change",
+      text: `<p>Your password has been changed successfully.</p>`,
+    };
+    await sendEmail(email, message);
+
+    return response.status(201).json({
+      success: true,
+      message: "Please login with your new password.",
+      severity: "success",
+    });
+  } catch (error) {
+    return response.status(500).json({
+      success: false,
+      message: "Internal server error.",
+      severity: "warning",
+    });
+  }
 };

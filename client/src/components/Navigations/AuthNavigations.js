@@ -4,6 +4,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Login from "../Authenticate/Login";
 import Registration from "../Authenticate/Registration";
 import ResetPassword from "../Authenticate/ResetPassword";
+import ForgotPassword from "../Authenticate/ForgotPassword";
+import Verification from "../Authenticate/Verification";
 
 export default function AuthNavigations() {
   const authStack = createStackNavigator();
@@ -23,6 +25,16 @@ export default function AuthNavigations() {
         name="Reset"
         options={{ headerShown: false }}
         component={ResetPassword}
+      />
+      <authStack.Screen
+        name="Forgot"
+        component={ForgotPassword}
+        options={{ headerShown: false }}
+      />
+      <authStack.Screen
+        name="Verify"
+        component={Verification}
+        options={{ headerShown: false }}
       />
     </authStack.Navigator>
   );
