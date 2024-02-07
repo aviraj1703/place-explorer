@@ -7,7 +7,6 @@ const secret = process.env.JWT_SECRET;
 
 export const verfyToken = (request, response, next) => {
   const { authorization } = request.headers;
-
   if (!authorization) {
     return response.status(401).json({
       success: false,

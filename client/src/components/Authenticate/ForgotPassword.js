@@ -14,10 +14,12 @@ import validator from "validator";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { BASE_URL } from "@env";
+import Loading from "../Shared/Loading";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const navigator = useNavigation();
+  const [loading, setLoading] = useState(false);
 
   const verifyUser = async () => {
     setEmail(email.toLowerCase());
@@ -26,6 +28,7 @@ export default function ForgotPassword() {
       Alert.alert("Please enter a valid email.");
       return;
     }
+    setLoading(true);
     try {
       const response = await axios.post(
         `${BASE_URL}/sendEmail`,
@@ -46,43 +49,49 @@ export default function ForgotPassword() {
           isItSingUp: response.data.isItSingUp,
         },
       });
+      setLoading(false);
       return;
     } catch (error) {
       Alert.alert(error.response.data.message);
+      setLoading(false);
       return;
     }
   };
 
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={require("../../../assets/register.png")}
-        style={{ flex: 1, justifyContent: "center", width: "100%" }}
-        resizeMode="cover"
-      >
-        <View style={styles.loginPage}>
-          <Text style={styles.heading}>Don't worry we will help you!</Text>
-          <View style={styles.field}>
-            <Fontisto name="email" size={20} color={Colors.black} />
-            <TextInput
-              placeholder="email@address.com"
-              value={email}
-              style={styles.input}
-              selectionColor={Colors.grey}
-              onChangeText={(email) => setEmail(email)}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
+      {loading ? (
+        <Loading />
+      ) : (
+        <ImageBackground
+          source={require("../../../assets/register.png")}
+          style={{ flex: 1, justifyContent: "center", width: "100%" }}
+          resizeMode="cover"
+        >
+          <View style={styles.loginPage}>
+            <Text style={styles.heading}>Don't worry we will help you!</Text>
+            <View style={styles.field}>
+              <Fontisto name="email" size={20} color={Colors.black} />
+              <TextInput
+                placeholder="email@address.com"
+                value={email}
+                style={styles.input}
+                selectionColor={Colors.grey}
+                onChangeText={(email) => setEmail(email)}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            </View>
+            <View style={styles.button}>
+              <Button
+                title="Get Pin"
+                color={Colors.bayernBlue}
+                onPress={verifyUser}
+              />
+            </View>
           </View>
-          <View style={styles.button}>
-            <Button
-              title="Get Pin"
-              color={Colors.bayernBlue}
-              onPress={verifyUser}
-            />
-          </View>
-        </View>
-      </ImageBackground>
+        </ImageBackground>
+      )}
     </View>
   );
 }

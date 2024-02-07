@@ -8,5 +8,5 @@ export const router = Express.Router();
 router.post("/sendEmail", nodeMailer);
 router.post("/signup", signUp);
 router.post("/signin", signIn);
-router.post("/verify", verfyToken, getUser);
+router.get("/userDetails", verfyToken, getUser);
 router.post("/reset", resetPassword);

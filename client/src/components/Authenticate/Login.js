@@ -16,11 +16,13 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { BASE_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Loading from "../Shared/Loading";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigator = useNavigation();
 
   const loginAction = async () => {
@@ -30,7 +32,8 @@ export default function Login() {
       Alert.alert("Please enter a valid email");
       return;
     }
-    try{
+    setLoading(true);
+    try {
       const response = await axios.post(
         `${BASE_URL}/signin`,
         {
@@ -43,90 +46,92 @@ export default function Login() {
           },
         }
       );
-      if (response.data.success) {
-        AsyncStorage.setItem("token", response.data.authToken);
-        navigator.navigate("Main_Screen");
-      } else {
-        Alert.alert(`${response.data.message}`);
-        setEmail("");
-        setPassword("");
-        return;
-      }
+      AsyncStorage.setItem("token", response.data.authToken);
+      navigator.navigate("Main_Screen");
+      setLoading(false);
+      return;
     } catch (error) {
       Alert.alert(error.response.data.message);
+      setEmail("");
+      setPassword("");
+      setLoading(false);
       return;
     }
   };
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={require("../../../assets/login.png")}
-        style={{ flex: 1, justifyContent: "center", width: "100%" }}
-        resizeMode="cover"
-      >
-        <View style={styles.loginPage}>
-          <Text style={styles.heading}>Hey, welcome back!</Text>
-          <View style={styles.field}>
-            <Fontisto name="email" size={20} color={Colors.black} />
-            <TextInput
-              placeholder="email@address.com"
-              value={email}
-              style={styles.input}
-              selectionColor={Colors.grey}
-              onChangeText={(email) => setEmail(email)}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
+      {loading ? (
+        <Loading />
+      ) : (
+        <ImageBackground
+          source={require("../../../assets/login.png")}
+          style={{ flex: 1, justifyContent: "center", width: "100%" }}
+          resizeMode="cover"
+        >
+          <View style={styles.loginPage}>
+            <Text style={styles.heading}>Hey, welcome back!</Text>
+            <View style={styles.field}>
+              <Fontisto name="email" size={20} color={Colors.black} />
+              <TextInput
+                placeholder="email@address.com"
+                value={email}
+                style={styles.input}
+                selectionColor={Colors.grey}
+                onChangeText={(email) => setEmail(email)}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            </View>
+            <View style={styles.field}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={20}
+                color={Colors.black}
+              />
+              <TextInput
+                placeholder="Password"
+                value={password}
+                style={styles.input}
+                selectionColor={Colors.grey}
+                onChangeText={(password) => setPassword(password)}
+                autoCapitalize="none"
+                autoCorrect={false}
+                secureTextEntry={!show}
+              />
+              <TouchableOpacity onPress={() => setShow(!show)}>
+                {!show ? (
+                  <Feather name="eye-off" size={20} color={Colors.black} />
+                ) : (
+                  <Feather name="eye" size={20} color={Colors.black} />
+                )}
+              </TouchableOpacity>
+            </View>
+            <View style={styles.button}>
+              <Button
+                title="Sign In"
+                color={Colors.bayernBlue}
+                onPress={loginAction}
+              />
+            </View>
+            <View style={styles.forgot}>
+              <Text style={styles.agreeText}>Forgot password?&nbsp;</Text>
+              <TouchableOpacity onPress={() => navigator.navigate("Forgot")}>
+                <Text style={styles.resetText}>Reset now.</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={{ fontFamily: "Quicksand-Regular", fontSize: 15 }}>
+              Not a member?
+            </Text>
+            <View style={styles.button}>
+              <Button
+                title="Sign Up"
+                color={Colors.bayernBlue}
+                onPress={() => navigator.navigate("Register")}
+              />
+            </View>
           </View>
-          <View style={styles.field}>
-            <Ionicons
-              name="lock-closed-outline"
-              size={20}
-              color={Colors.black}
-            />
-            <TextInput
-              placeholder="Password"
-              value={password}
-              style={styles.input}
-              selectionColor={Colors.grey}
-              onChangeText={(password) => setPassword(password)}
-              autoCapitalize="none"
-              autoCorrect={false}
-              secureTextEntry={!show}
-            />
-            <TouchableOpacity onPress={() => setShow(!show)}>
-              {!show ? (
-                <Feather name="eye-off" size={20} color={Colors.black} />
-              ) : (
-                <Feather name="eye" size={20} color={Colors.black} />
-              )}
-            </TouchableOpacity>
-          </View>
-          <View style={styles.button}>
-            <Button
-              title="Sign In"
-              color={Colors.bayernBlue}
-              onPress={loginAction}
-            />
-          </View>
-          <View style={styles.forgot}>
-            <Text style={styles.agreeText}>Forgot password?&nbsp;</Text>
-            <TouchableOpacity onPress={() => navigator.navigate("Forgot")}>
-              <Text style={styles.resetText}>Reset now.</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={{ fontFamily: "Quicksand-Regular", fontSize: 15 }}>
-            Not a member?
-          </Text>
-          <View style={styles.button}>
-            <Button
-              title="Sign Up"
-              color={Colors.bayernBlue}
-              onPress={() => navigator.navigate("Register")}
-            />
-          </View>
-        </View>
-      </ImageBackground>
+        </ImageBackground>
+      )}
     </View>
   );
 }

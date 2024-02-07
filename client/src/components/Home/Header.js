@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Image, TextInput } from "react-native";
+import { StyleSheet, View, Image, TextInput } from "react-native";
 import React from "react";
 import Colors from "../Shared/Colors";
 import Size from "../Shared/Size";

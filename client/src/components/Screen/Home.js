@@ -1,25 +1,23 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import React, { useContext, useState } from "react";
 import Header from "../Home/Header";
 import GoogleMapView from "../Home/GoogleMapView";
 import Category from "../Home/Category";
 import GlobalApi from "../Services/GlobalApi";
-import { useEffect } from "react";
 import PlaceList from "../Places/PlaceList";
-import { UserLocationContext } from "../Context/UserLocationContext";
+import { UserDetailsContext } from "../Context/UserDetailsContext";
 import { ScrollView } from "react-native-virtualized-view";
 import GetLocation from "../Services/GetLocation";
+import Loading from "../Shared/Loading";
 
 export default function Home() {
   const [placeDetails, setPlaceDetails] = useState(null);
-  const { location } = useContext(UserLocationContext);
-
-  useEffect(() => {
-    getNearByPlaces();
-  }, []);
+  const { location, userName, userEmail } = useContext(UserDetailsContext);
+  const [loading, setLoading] = useState(false);
 
   const getNearByPlaces = async (value) => {
-    if(value === undefined) return;
+    if (value === undefined) return;
+    setLoading(true);
     if (location) {
       GlobalApi.nearByPlcaes(
         location.coords.latitude,
@@ -27,16 +25,24 @@ export default function Home() {
         value
       ).then((response) => {
         setPlaceDetails(response.data.results);
+        setLoading(false);
       });
     } else {
       const Location = await GetLocation.getLocation();
       if (Location) {
-        GlobalApi.nearByPlcaes(Location.coords.latitude, Location.coords.longitude, value).then((response) => {
+        GlobalApi.nearByPlcaes(
+          Location.coords.latitude,
+          Location.coords.longitude,
+          value
+        ).then((response) => {
           setPlaceDetails(response.data.results);
+          setLoading(false);
         });
       }
     }
   };
+
+  if (loading) return <Loading />;
 
   return (
     <ScrollView style={styles.container}>

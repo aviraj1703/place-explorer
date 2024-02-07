@@ -16,7 +16,7 @@ import validator from "validator";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { BASE_URL } from "@env";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Loading from "../Shared/Loading";
 
 export default function Registration() {
   const [name, setName] = useState("");
@@ -25,6 +25,7 @@ export default function Registration() {
   const [rePassword, setRePassword] = useState("");
   const [agree, setAgree] = useState(false);
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigator = useNavigation();
 
   const enableSignUpButton = () => {
@@ -55,7 +56,7 @@ export default function Registration() {
       Alert.alert("Re entered password is not matching.");
       return;
     }
-
+    setLoading(true);
     try {
       const response = await axios.post(
         `${BASE_URL}/sendEmail`,
@@ -78,6 +79,7 @@ export default function Registration() {
           isItSingUp: response.data.isItSingUp,
         },
       });
+      setLoading(false);
       return;
     } catch (error) {
       Alert.alert(error.response.data.message);
@@ -85,114 +87,119 @@ export default function Registration() {
       setEmail("");
       setPassword("");
       setRePassword("");
+      setLoading(false);
       return;
     }
   };
 
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={require("../../../assets/register.png")}
-        style={{ flex: 1, justifyContent: "center", width: "100%" }}
-        resizeMode="cover"
-      >
-        <View style={styles.loginPage}>
-          <Text style={styles.heading}>Explore the places with us!</Text>
-          <View style={styles.field}>
-            <FontAwesome name="user-o" size={20} color={Colors.black} />
-            <TextInput
-              placeholder="Bhupendra Jogi"
-              value={name}
-              style={styles.input}
-              selectionColor={Colors.grey}
-              onChangeText={(name) => setName(name)}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-          </View>
-          <View style={styles.field}>
-            <Fontisto name="email" size={20} color={Colors.black} />
-            <TextInput
-              placeholder="email@address.com"
-              value={email}
-              style={styles.input}
-              selectionColor={Colors.grey}
-              onChangeText={(email) => setEmail(email)}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-          </View>
-          <View style={styles.field}>
-            <Ionicons
-              name="lock-closed-outline"
-              size={20}
-              color={Colors.black}
-            />
-            <TextInput
-              placeholder="Password"
-              value={password}
-              style={styles.input}
-              selectionColor={Colors.grey}
-              onChangeText={(password) => setPassword(password)}
-              autoCapitalize="none"
-              autoCorrect={false}
-              secureTextEntry={!show}
-            />
-            <TouchableOpacity onPress={() => setShow(!show)}>
-              {!show ? (
-                <Feather name="eye-off" size={20} color={Colors.black} />
-              ) : (
-                <Feather name="eye" size={20} color={Colors.black} />
-              )}
-            </TouchableOpacity>
-          </View>
-          <View style={styles.field}>
-            <Ionicons
-              name="lock-closed-outline"
-              size={20}
-              color={Colors.black}
-            />
-            <TextInput
-              placeholder="Re-enter Password"
-              value={rePassword}
-              style={styles.input}
-              selectionColor={Colors.grey}
-              onChangeText={(rePassword) => setRePassword(rePassword)}
-              autoCapitalize="none"
-              autoCorrect={false}
-              secureTextEntry={true}
-            />
-          </View>
-          <View style={styles.terms}>
-            <Checkbox
-              status={agree ? "checked" : "unchecked"}
-              onPress={enableSignUpButton}
-              color={agree ? Colors.bayernBlue : undefined}
-            />
-            <Text style={styles.agreeText}>
-              I agree to the terms and conditions.
+      {loading ? (
+        <Loading />
+      ) : (
+        <ImageBackground
+          source={require("../../../assets/register.png")}
+          style={{ flex: 1, justifyContent: "center", width: "100%" }}
+          resizeMode="cover"
+        >
+          <View style={styles.loginPage}>
+            <Text style={styles.heading}>Explore the places with us!</Text>
+            <View style={styles.field}>
+              <FontAwesome name="user-o" size={20} color={Colors.black} />
+              <TextInput
+                placeholder="Bhupendra Jogi"
+                value={name}
+                style={styles.input}
+                selectionColor={Colors.grey}
+                onChangeText={(name) => setName(name)}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            </View>
+            <View style={styles.field}>
+              <Fontisto name="email" size={20} color={Colors.black} />
+              <TextInput
+                placeholder="email@address.com"
+                value={email}
+                style={styles.input}
+                selectionColor={Colors.grey}
+                onChangeText={(email) => setEmail(email)}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            </View>
+            <View style={styles.field}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={20}
+                color={Colors.black}
+              />
+              <TextInput
+                placeholder="Password"
+                value={password}
+                style={styles.input}
+                selectionColor={Colors.grey}
+                onChangeText={(password) => setPassword(password)}
+                autoCapitalize="none"
+                autoCorrect={false}
+                secureTextEntry={!show}
+              />
+              <TouchableOpacity onPress={() => setShow(!show)}>
+                {!show ? (
+                  <Feather name="eye-off" size={20} color={Colors.black} />
+                ) : (
+                  <Feather name="eye" size={20} color={Colors.black} />
+                )}
+              </TouchableOpacity>
+            </View>
+            <View style={styles.field}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={20}
+                color={Colors.black}
+              />
+              <TextInput
+                placeholder="Re-enter Password"
+                value={rePassword}
+                style={styles.input}
+                selectionColor={Colors.grey}
+                onChangeText={(rePassword) => setRePassword(rePassword)}
+                autoCapitalize="none"
+                autoCorrect={false}
+                secureTextEntry={true}
+              />
+            </View>
+            <View style={styles.terms}>
+              <Checkbox
+                status={agree ? "checked" : "unchecked"}
+                onPress={enableSignUpButton}
+                color={agree ? Colors.bayernBlue : undefined}
+              />
+              <Text style={styles.agreeText}>
+                I agree to the terms and conditions.
+              </Text>
+            </View>
+            <View style={styles.button}>
+              <Button
+                title="Sign UP"
+                disabled={!agree}
+                color={agree && Colors.bayernBlue}
+                onPress={registrationPage}
+              />
+            </View>
+            <Text style={{ fontFamily: "Quicksand-Regular", fontSize: 15 }}>
+              Already a member?
             </Text>
+            <View style={styles.button}>
+              <Button
+                title="Sign In"
+                color={Colors.bayernBlue}
+                onPress={() => navigator.navigate("Login")}
+              />
+            </View>
           </View>
-          <View style={styles.button}>
-            <Button
-              title="Sign UP"
-              disabled={!agree}
-              color={agree && Colors.bayernBlue}
-              onPress={registrationPage}
-            />
-          </View>
-          <Text style={{ fontFamily: "Quicksand-Regular", fontSize: 15 }}>
-            Already a member?
-          </Text>
-          <View style={styles.button}>
-            <Button
-              title="Sign In"
-              color={Colors.bayernBlue}
-              onPress={() => navigator.navigate("Login")}
-            />
-          </View>
-        </View>
-      </ImageBackground>
+        </ImageBackground>
+      )}
     </View>
   );
 }

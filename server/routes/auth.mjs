@@ -146,7 +146,7 @@ export const signIn = async (request, response) => {
 // Check user verification status
 export const getUser = async (request, response) => {
   // Get the object id from jwt verification
-  const _id = request.id;
+  const _id = request.user._id;
 
   // Send user info in response
   try {
