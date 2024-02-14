@@ -25,7 +25,7 @@ export default function TabNavigation() {
 
   useEffect(() => {
     saveLocationValue();
-    storeUserDetails();
+    if (userEmail === "") storeUserDetails();
   }, []);
 
   const saveLocationValue = async () => {
@@ -39,6 +39,7 @@ export default function TabNavigation() {
     setLoading(true);
     const access_token = await AsyncStorage.getItem("token");
     const user = await getUser(access_token);
+
     if (user === null) {
       navigator.navigate("Login");
       setLoading(false);

@@ -47,8 +47,8 @@ export default function Login() {
         }
       );
       AsyncStorage.setItem("token", response.data.authToken);
-      navigator.navigate("Main_Screen");
       setLoading(false);
+      navigator.navigate("Main_Screen");
       return;
     } catch (error) {
       Alert.alert(error.response.data.message);

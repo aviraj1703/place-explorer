@@ -3,7 +3,7 @@ import React from "react";
 import { GOOGLE_MAPS_API_KEY } from "@env";
 import Colors from "../Shared/Colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5, Fontisto } from "@expo/vector-icons";
 import Direction from "../Services/Direction";
 import Share from "../Services/Share";
 
@@ -68,6 +68,17 @@ export default function PlaceDetailsItem({ place }) {
             color={Colors.bayernBlue}
           />
           <Text style={styles.buttonText}>Share</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => Share.shareDirections(place, placeAddress)}
+          style={styles.button}
+        >
+          <Fontisto
+            name="favorite"
+            size={18}
+            color={Colors.bayernBlue}
+          />
+          <Text style={styles.buttonText}>Favourite</Text>
         </TouchableOpacity>
       </View>
     </View>
