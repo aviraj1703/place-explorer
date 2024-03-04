@@ -33,6 +33,7 @@ export default function Login() {
       return;
     }
     setLoading(true);
+    console.log(BASE_URL);
     try {
       const response = await axios.post(
         `${BASE_URL}/signin`,

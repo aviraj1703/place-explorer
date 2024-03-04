@@ -3,6 +3,7 @@ import { BASE_URL } from "@env";
 import { Alert } from "react-native";
 
 export const getUser = async (access_token) => {
+  console.log("Getting user details...");
   try {
     const response = await axios.get(`${BASE_URL}/userDetails`, {
       headers: {
@@ -10,6 +11,7 @@ export const getUser = async (access_token) => {
         "Content-Type": "application/json",
       },
     });
+    if (response.data === undefined) getUser(access_token);
     return response.data;
   } catch (error) {
     Alert.alert(error.response.data.message);

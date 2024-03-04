@@ -15,11 +15,15 @@ import {
   Ionicons,
   MaterialCommunityIcons,
   EvilIcons,
+  Octicons,
 } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Profile() {
   const { location, userName, userEmail, userId } =
     useContext(UserDetailsContext);
+  const navigator = useNavigation();
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -40,14 +44,17 @@ export default function Profile() {
             <Fontisto name="email" size={20} color={Colors.black} />
             <Text style={styles.data}>{userEmail}</Text>
           </View>
-          <TouchableOpacity style={styles.edit}>
+          <TouchableOpacity
+            style={styles.edit}
+            onPress={() => navigator.navigate("Favourite")}
+          >
             <View style={styles.field}>
               <Ionicons name="list-outline" size={20} color={Colors.black} />
               <Text style={styles.data}>Favourite List</Text>
             </View>
             <EvilIcons name="chevron-right" size={24} color={Colors.black} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.edit}>
+          <TouchableOpacity style={styles.edit} onPress={() => navigator.navigate("Edit_profile")}>
             <View style={styles.field}>
               <MaterialCommunityIcons
                 name="account-edit-outline"
@@ -58,7 +65,7 @@ export default function Profile() {
             </View>
             <EvilIcons name="chevron-right" size={24} color={Colors.black} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.edit}>
+          <TouchableOpacity style={styles.edit} onPress={() => navigator.navigate("Reset", { email: userEmail })}>
             <View style={styles.field}>
               <Ionicons
                 name="settings-outline"
@@ -66,6 +73,19 @@ export default function Profile() {
                 color={Colors.black}
               />
               <Text style={styles.data}>Change Password</Text>
+            </View>
+            <EvilIcons name="chevron-right" size={24} color={Colors.black} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.edit}
+            onPress={() => {
+              AsyncStorage.clear();
+              navigator.navigate("Login");
+            }}
+          >
+            <View style={styles.field}>
+              <Octicons name="sign-out" size={24} color={Colors.black} />
+              <Text style={styles.data}>Logout</Text>
             </View>
             <EvilIcons name="chevron-right" size={24} color={Colors.black} />
           </TouchableOpacity>

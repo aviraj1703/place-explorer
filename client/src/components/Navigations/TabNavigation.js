@@ -13,6 +13,7 @@ import Loading from "../Shared/Loading";
 import { getUser } from "../Services/GetUserDetails";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import ProfileNavigation from "./ProfileNavigation";
 
 export default function TabNavigation() {
   const Tab = createBottomTabNavigator();
@@ -39,7 +40,6 @@ export default function TabNavigation() {
     setLoading(true);
     const access_token = await AsyncStorage.getItem("token");
     const user = await getUser(access_token);
-
     if (user === null) {
       navigator.navigate("Login");
       setLoading(false);
@@ -97,8 +97,8 @@ export default function TabNavigation() {
           }}
         />
         <Tab.Screen
-          name="Profile"
-          component={Profile}
+          name="Profile_section"
+          component={ProfileNavigation}
           options={{
             tabBarLabel: "Profile",
             tabBarIcon: () => (

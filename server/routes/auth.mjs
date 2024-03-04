@@ -126,7 +126,7 @@ export const signIn = async (request, response) => {
         },
         secret
       );
-
+      console.log("Login is successful..!");
       return response.status(200).json({
         authToken: `Bearer ${jwt_token}`,
         success: true,
