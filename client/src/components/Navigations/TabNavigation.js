@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Favourite from "../Screen/Favourite";
-import Search from "../Screen/Search";
-import Profile from "../Screen/Profile";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Colors from "../Shared/Colors";
 import Size from "../Shared/Size";
@@ -14,6 +11,8 @@ import { getUser } from "../Services/GetUserDetails";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import ProfileNavigation from "./ProfileNavigation";
+import SearchNavigations from "./SearchNavigations";
+import FavouriteNavigations from "./FavouriteNavigations";
 
 export default function TabNavigation() {
   const Tab = createBottomTabNavigator();
@@ -69,8 +68,8 @@ export default function TabNavigation() {
           }}
         />
         <Tab.Screen
-          name="Search"
-          component={Search}
+          name="Search_section"
+          component={SearchNavigations}
           options={{
             tabBarLabel: "Search",
             tabBarIcon: () => (
@@ -83,8 +82,8 @@ export default function TabNavigation() {
           }}
         />
         <Tab.Screen
-          name="Favourite"
-          component={Favourite}
+          name="Favourite_section"
+          component={FavouriteNavigations}
           options={{
             tabBarLabel: "Favourite",
             tabBarIcon: () => (

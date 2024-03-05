@@ -5,7 +5,7 @@ import "dotenv/config";
 const User = mongoose.model("User");
 const secret = process.env.JWT_SECRET;
 
-export const verfyToken = (request, response, next) => {
+export const verifyToken = (request, response, next) => {
   const { authorization } = request.headers;
   if (!authorization) {
     return response.status(401).json({

@@ -151,7 +151,7 @@ export const getUser = async (request, response) => {
   // Send user info in response
   try {
     const user = await User.findOne({ _id });
-    return response.json({
+    return response.status(200).json({
       success: true,
       id: _id,
       name: user.name,

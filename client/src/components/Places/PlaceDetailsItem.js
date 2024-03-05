@@ -1,16 +1,59 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from "react-native";
+import React, { useContext, useState } from "react";
 import { GOOGLE_MAPS_API_KEY } from "@env";
 import Colors from "../Shared/Colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome, FontAwesome5, Fontisto } from "@expo/vector-icons";
 import Direction from "../Services/Direction";
 import Share from "../Services/Share";
+import Loading from "../Shared/Loading";
+import { UserDetailsContext } from "../Context/UserDetailsContext";
+import { BASE_URL } from "@env";
+import axios from "axios";
 
 export default function PlaceDetailsItem({ place }) {
+  const { location, userName, userEmail, userId } =
+    useContext(UserDetailsContext);
+
   let placeAddress = place.vicinity;
   if (placeAddress === undefined)
     placeAddress = place.vicinity ? place.vicinity : place.formatted_address;
+
+  const [loading, setLoading] = useState(false);
+
+  const addToFavourite = async () => {
+    setLoading(true);
+    const favoriteList = {
+      name: place.name,
+      vicinity: placeAddress,
+      rating: place.rating,
+      user_ratings_total: place.user_ratings_total,
+      image: place?.photos[0]?.photo_reference,
+    };
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/addToFavourite`,
+        {
+          _id: userId,
+          placeList: favoriteList,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setLoading(false);
+      Alert.alert(response.data.message);
+      return;
+    } catch (error) {
+      Alert.alert(error.response.data.message);
+      setLoading(false);
+      return;
+    }
+  };
+
+  if (loading) return <Loading />;
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{place.name}</Text>
@@ -32,6 +75,20 @@ export default function PlaceDetailsItem({ place }) {
               "?maxwidth=400" +
               "&photo_reference=" +
               place?.photos[0]?.photo_reference +
+              "&key=" +
+              GOOGLE_MAPS_API_KEY,
+          }}
+          style={styles.photo}
+        />
+      )}
+      {place.image && (
+        <Image
+          source={{
+            uri:
+              "https://maps.googleapis.com/maps/api/place/photo" +
+              "?maxwidth=400" +
+              "&photo_reference=" +
+              place.image +
               "&key=" +
               GOOGLE_MAPS_API_KEY,
           }}
@@ -69,15 +126,8 @@ export default function PlaceDetailsItem({ place }) {
           />
           <Text style={styles.buttonText}>Share</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => Share.shareDirections(place, placeAddress)}
-          style={styles.button}
-        >
-          <Fontisto
-            name="favorite"
-            size={18}
-            color={Colors.bayernBlue}
-          />
+        <TouchableOpacity onPress={addToFavourite} style={styles.button}>
+          <Fontisto name="favorite" size={18} color={Colors.bayernBlue} />
           <Text style={styles.buttonText}>Favourite</Text>
         </TouchableOpacity>
       </View>
