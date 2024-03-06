@@ -18,9 +18,17 @@ const favoritePlaceSchema = new mongoose.Schema({
     default: undefined,
   },
   image: {
-    type: String, // Assuming you store the image URL as a string
-    default: undefined,
+    type: String,
+    default: undefined
   },
+  latitude: {
+    type: Number,
+    required: true,
+  },
+  longitude: {
+    type: Number,
+    required: true,
+  }
 });
 
 const userSchema = mongoose.Schema({

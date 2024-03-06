@@ -8,7 +8,8 @@ import PlaceMarker from "../Places/PlaceMarker";
 
 export default function GoogleMapView({ placeList }) {
   const [mapRegion, setMapRegion] = useState(null);
-  let { location } = useContext(UserDetailsContext);
+  const { location, userName, userEmail, userId } =
+    useContext(UserDetailsContext);
 
   useEffect(() => {
     if (location) {

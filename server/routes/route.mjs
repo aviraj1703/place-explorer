@@ -2,7 +2,7 @@ import Express from "express";
 import "dotenv/config";
 import { signUp, signIn, resetPassword, getUser, nodeMailer } from "./auth.mjs";
 import { verifyToken } from "../middleware/tokenVerification.mjs";
-import { addToFavourite, getFavourite } from "./list.mjs";
+import { addToFavourite, getFavourite, removeFavourite } from "./list.mjs";
 
 export const router = Express.Router();
 
@@ -14,3 +14,4 @@ router.post("/reset", resetPassword);
 
 router.post("/addToFavourite", addToFavourite);
 router.get("/getFavourite", verifyToken, getFavourite);
+router.post("/removeFavourite", removeFavourite);

@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import React, { useContext, useState } from "react";
 import { GOOGLE_MAPS_API_KEY } from "@env";
 import Colors from "../Shared/Colors";
@@ -23,13 +30,31 @@ export default function PlaceDetailsItem({ place }) {
 
   const addToFavourite = async () => {
     setLoading(true);
-    const favoriteList = {
-      name: place.name,
-      vicinity: placeAddress,
-      rating: place.rating,
-      user_ratings_total: place.user_ratings_total,
-      image: place?.photos[0]?.photo_reference,
-    };
+    let favoriteList = {};
+    if (place.image){
+      Alert.alert("Already added to the favourite list.");
+      setLoading(false);
+      return;
+    }
+    else if (place.photos)
+      favoriteList = {
+        name: place.name,
+        vicinity: placeAddress,
+        rating: place.rating,
+        user_ratings_total: place.user_ratings_total,
+        image: place?.photos[0]?.photo_reference,
+        latitude: place.geometry.location.lat,
+        longitude: place.geometry.location.lng,
+      };
+    else
+      favoriteList = {
+        name: place.name,
+        vicinity: placeAddress,
+        rating: place.rating,
+        user_ratings_total: place.user_ratings_total,
+        latitude: place.geometry.location.lat,
+        longitude: place.geometry.location.lng,
+      };
     try {
       const response = await axios.post(
         `${BASE_URL}/addToFavourite`,

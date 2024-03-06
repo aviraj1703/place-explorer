@@ -9,7 +9,7 @@ export const addToFavourite = async (request, response) => {
 
   // Find the user
   const user = await User.findOne({ _id });
-  
+
   // Get favourite list array and apply logic here
   const list = await user.favoriteList;
   let alreadyExist = false;
@@ -35,7 +35,7 @@ export const addToFavourite = async (request, response) => {
   // Add place to the list
   list.push(placeList);
   user.favoriteList = list;
-
+  console.log(placeList);
   try {
     // Save user data
     await user.save();
@@ -68,5 +68,39 @@ export const getFavourite = async (request, response) => {
     });
   } catch (error) {
     return response.status(500).json({ success: false, message: error });
+  }
+};
+
+export const removeFavourite = async (request, response) => {
+  // Get the index value and user id
+  const { index, _id } = request.body;
+
+  // Get the user
+  const user = await User.findOne({ _id });
+
+  // Remove particular index value
+  const favList = user.favoriteList;
+  if (index >= 0 && index < favList.length) {
+    favList.splice(index, 1);
+  }
+
+  user.favoriteList = favList;
+
+  try {
+    // Save user data
+    await user.save();
+
+    return response.status(201).json({
+      success: true,
+      favoriteList: user.favoriteList,
+      message: "Place is removed from favourite successfully..!",
+      severity: "success",
+    });
+  } catch (error) {
+    return response.status(500).json({
+      success: false,
+      message: `${error}`,
+      severity: "error",
+    });
   }
 };
