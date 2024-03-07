@@ -23,7 +23,7 @@ export default function Favourite() {
     useContext(UserDetailsContext);
   const [loading, setLoading] = useState(false);
   const [placeList, setPlaceList] = useState([]);
-  const [idx, setIdx] = useState(-1);
+  const [placeId, setPlaceId] = useState("");
   const navigator = useNavigation();
 
   const onPlaceClick = (item) => {
@@ -37,7 +37,6 @@ export default function Favourite() {
   const getFavList = async () => {
     setLoading(true);
     const access_token = await AsyncStorage.getItem("token");
-    console.log("Getting favourite list...");
     try {
       const response = await axios.get(`${BASE_URL}/getFavourite`, {
         headers: {
@@ -47,14 +46,39 @@ export default function Favourite() {
       });
       setPlaceList(await response.data.favoriteList);
       setLoading(false);
+      return;
     } catch (error) {
       Alert.alert(error.response.data.message);
+      setLoading(false);
+      return;
+    }
+  };
+
+  const removeFromList = async (value) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/removeFavourite`,
+        {
+          place_id: value,
+          _id: userId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      Alert.alert(response.data.message);
+      await getFavList();
+    } catch (error) {
+      Alert.alert(error.response.data.message);
+    } finally {
       setLoading(false);
     }
   };
 
-  const removeFromList = (value) => {
-    setIdx(value);
+  const confirmRemove = (value) => {
     Alert.alert(
       "Confirmation",
       "Are you sure you want to delete this item?",
@@ -65,32 +89,7 @@ export default function Favourite() {
         },
         {
           text: "OK",
-          onPress: async () => {
-            setLoading(true);
-            console.log(idx);
-            try {
-              const response = await axios.post(
-                `${BASE_URL}/removeFavourite`,
-                {
-                  index: idx,
-                  _id: userId,
-                },
-                {
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                }
-              );
-              Alert.alert(response.data.message);
-              setPlaceList(await response.data.favoriteList);
-              setLoading(false);
-              return;
-            } catch (error) {
-              Alert.alert(error.response.data.message);
-              setLoading(false);
-              return;
-            }
-          },
+          onPress: () => removeFromList(value),
         },
       ],
       { cancelable: false }
@@ -103,7 +102,7 @@ export default function Favourite() {
       <View style={styles.empty}>
         <Text style={styles.name}>Reload</Text>
         <TouchableOpacity onPress={getFavList}>
-          <AntDesign name="reload1" size={50} color={Colors.mediumSeaGreen} />
+          <AntDesign name="reload1" size={40} color={Colors.mediumSeaGreen} />
         </TouchableOpacity>
         <Text style={styles.name}>Your list is empty..!</Text>
         <FontAwesome5 name="box-open" size={200} color={Colors.grey} />
@@ -112,9 +111,9 @@ export default function Favourite() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.loader}>
-        <Text style={styles.name2}>Reload</Text>
+        <Text style={styles.name2}>Explore your favourite list..!</Text>
         <TouchableOpacity onPress={getFavList}>
-          <AntDesign name="reload1" size={50} color={Colors.mediumSeaGreen} />
+          <AntDesign name="reload1" size={20} color={Colors.mediumSeaGreen} />
         </TouchableOpacity>
       </View>
       <FlatList
@@ -128,8 +127,7 @@ export default function Favourite() {
             <FavItem
               key={index}
               place={item}
-              index={index}
-              removeThisItem={(value) => removeFromList(value)}
+              removeThisItem={(value) => confirmRemove(value)}
             />
           </TouchableOpacity>
         )}
@@ -161,16 +159,18 @@ const styles = StyleSheet.create({
     marginTop: "15%",
   },
   name2: {
-    fontSize: 17,
+    fontSize: 20,
     fontFamily: "Overlock-Bold",
     margin: "1%",
-    color: Colors.crimson,
+    color: Colors.bayernBlue,
   },
   loader: {
     width: "100%",
     display: "flex",
-    justifyContent: "center",
+    flexDirection: "row",
+    gap: 2,
+    justifyContent: "space-around",
     alignItems: "center",
-    marginBottom: "10%"
+    marginBottom: "10%",
   },
 });

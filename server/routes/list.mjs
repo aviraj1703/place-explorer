@@ -1,8 +1,9 @@
-import mongoose from "mongoose";
+import { mongoose } from "mongoose";
 import "dotenv/config";
 
 const User = mongoose.model("User");
 
+// Add place to favourite list
 export const addToFavourite = async (request, response) => {
   // Get details
   const { _id, placeList } = request.body;
@@ -35,7 +36,6 @@ export const addToFavourite = async (request, response) => {
   // Add place to the list
   list.push(placeList);
   user.favoriteList = list;
-  console.log(placeList);
   try {
     // Save user data
     await user.save();
@@ -54,6 +54,7 @@ export const addToFavourite = async (request, response) => {
   }
 };
 
+// Get place from favourite list
 export const getFavourite = async (request, response) => {
   // Get the object id from jwt verification
   const _id = request.user._id;
@@ -71,18 +72,31 @@ export const getFavourite = async (request, response) => {
   }
 };
 
+// Remove place from favourite list
 export const removeFavourite = async (request, response) => {
   // Get the index value and user id
-  const { index, _id } = request.body;
+  const { place_id, _id } = request.body;
 
   // Get the user
   const user = await User.findOne({ _id });
 
   // Remove particular index value
   const favList = user.favoriteList;
-  if (index >= 0 && index < favList.length) {
-    favList.splice(index, 1);
-  }
+  let idx = -1;
+  favList.map((element, index) => {
+    if (element._id.toString() === place_id) {
+      idx = index;
+      return;
+    }
+  });
+  if (idx >= 0 && idx < favList.length) {
+    favList.splice(idx, 1);
+  } else
+    return response.status(500).json({
+      success: false,
+      message: "Place is not found.",
+      severity: "error",
+    });
 
   user.favoriteList = favList;
 
@@ -92,7 +106,6 @@ export const removeFavourite = async (request, response) => {
 
     return response.status(201).json({
       success: true,
-      favoriteList: user.favoriteList,
       message: "Place is removed from favourite successfully..!",
       severity: "success",
     });

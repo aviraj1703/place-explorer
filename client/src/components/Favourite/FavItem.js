@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../Shared/Colors";
 import { GOOGLE_MAPS_API_KEY } from "@env";
 
-export default function FavItem({ place, index, removeThisItem }) {
+export default function FavItem({ place, removeThisItem }) {
   return (
     <View>
       <View style={styles.container}>
@@ -40,7 +40,7 @@ export default function FavItem({ place, index, removeThisItem }) {
           </View>
         </View>
       </View>
-      <TouchableOpacity style={styles.delete} onPress={() => removeThisItem(index)}>
+      <TouchableOpacity style={styles.delete} onPress={() => removeThisItem(place._id)}>
         <MaterialCommunityIcons
           name="delete-circle"
           size={45}
