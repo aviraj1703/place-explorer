@@ -92,7 +92,7 @@ export const removeFavourite = async (request, response) => {
   if (idx >= 0 && idx < favList.length) {
     favList.splice(idx, 1);
   } else
-    return response.status(500).json({
+    return response.status(404).json({
       success: false,
       message: "Place is not found.",
       severity: "error",
@@ -104,7 +104,7 @@ export const removeFavourite = async (request, response) => {
     // Save user data
     await user.save();
 
-    return response.status(201).json({
+    return response.status(200).json({
       success: true,
       message: "Place is removed from favourite successfully..!",
       severity: "success",

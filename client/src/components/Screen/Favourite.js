@@ -57,8 +57,8 @@ export default function Favourite() {
   const removeFromList = async (value) => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${BASE_URL}/removeFavourite`,
+      const response = await axios.delete(
+        `${BASE_URL}/addToFavourite`,
         {
           place_id: value,
           _id: userId,

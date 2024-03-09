@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import "dotenv/config";
 
-mongoose
+export const connection = mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
     console.log("Connected to MongoDB.");
