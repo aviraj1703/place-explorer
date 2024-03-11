@@ -1,11 +1,16 @@
 import mongoose from "mongoose";
 import "dotenv/config";
 
-export const connection = mongoose
-  .connect(process.env.MONGO_URL)
+// Establish MongoDB connection
+const connectionPromise = mongoose.connect(process.env.MONGO_URL);
+
+// Handle connection status
+connectionPromise
   .then(() => {
     console.log("Connected to MongoDB.");
   })
-  .catch((error) =>
-    console.log(`Failed to connect to MongoDB due to \n${error}`)
-  );
+  .catch((error) => {
+    console.error(`Failed to connect to MongoDB due to:\n${error}`);
+  });
+
+export default connectionPromise;

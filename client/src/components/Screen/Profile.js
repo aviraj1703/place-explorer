@@ -5,8 +5,9 @@ import {
   ImageBackground,
   Image,
   TouchableOpacity,
+  Alert,
 } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { UserDetailsContext } from "../Context/UserDetailsContext";
 import Colors from "../Shared/Colors";
 import {
@@ -19,11 +20,36 @@ import {
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BASE_URL } from "@env";
+import axios from "axios";
+import Loading from "../Shared/Loading";
 
 export default function Profile() {
   const { location, userName, userEmail, userId } =
     useContext(UserDetailsContext);
   const navigator = useNavigation();
+  const [imageUri, setImageUri] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const fetchUserProfile = async (filename) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${BASE_URL}/image/${filename}`);
+      setImageUri(response.data.imageUrl);
+      setLoading(false);
+      return;
+    } catch (error) {
+      Alert.alert(error.response.data.message);
+      setLoading(false);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    fetchUserProfile(userId);
+  }, []);
+
+  if (loading) return <Loading />;
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -32,10 +58,20 @@ export default function Profile() {
         resizeMode="cover"
       >
         <View style={styles.subContainer}>
-          <Image
-            source={require("../../../assets/Aviraj.jpg")}
-            style={styles.logo}
-          />
+          {!imageUri ? (
+            <View style={styles.logo}>
+              <FontAwesome
+                name="user-circle-o"
+                size={150}
+                color={Colors.black}
+              />
+            </View>
+          ) : (
+            <Image
+              source={require("../../../assets/Aviraj.jpg")}
+              style={styles.logo}
+            />
+          )}
           <View style={styles.field}>
             <FontAwesome name="user-o" size={20} color={Colors.black} />
             <Text style={styles.data}>{userName}</Text>
@@ -54,7 +90,10 @@ export default function Profile() {
             </View>
             <EvilIcons name="chevron-right" size={24} color={Colors.black} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.edit} onPress={() => navigator.navigate("Edit_profile")}>
+          <TouchableOpacity
+            style={styles.edit}
+            onPress={() => navigator.navigate("Edit_profile")}
+          >
             <View style={styles.field}>
               <MaterialCommunityIcons
                 name="account-edit-outline"
@@ -65,7 +104,10 @@ export default function Profile() {
             </View>
             <EvilIcons name="chevron-right" size={24} color={Colors.black} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.edit} onPress={() => navigator.navigate("Reset", { email: userEmail })}>
+          <TouchableOpacity
+            style={styles.edit}
+            onPress={() => navigator.navigate("Reset", { email: userEmail })}
+          >
             <View style={styles.field}>
               <Ionicons
                 name="settings-outline"
@@ -114,6 +156,7 @@ const styles = StyleSheet.create({
     top: "-15%",
     borderRadius: 100,
     left: "30%",
+    backgroundColor: Colors.white,
   },
   edit: {
     width: "95%",
