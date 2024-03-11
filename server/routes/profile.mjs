@@ -19,13 +19,11 @@ connectionPromise
         cb(null, "uploads/");
       },
       filename: function (req, file, cb) {
-        const userId = req.body.userId;
-        const filename = `${userId}.jpg`;
-        cb(null, filename);
+        cb(null, file.originalname);
       },
     });
 
-    upload = multer({ storage }).single("image");
+    upload = multer().single("image");
   })
   .catch((error) => {
     console.error(`Failed to connect to MongoDB due to:\n${error}`);
@@ -33,7 +31,7 @@ connectionPromise
 
 // Upload an image
 export const uploadImage = (req, res) => {
-  upload(req, res, (err) => {
+  upload(req, res, async (err) => {
     if (err) {
       console.log("Error uploading file:", err);
       return res.status(500).json({
@@ -42,42 +40,51 @@ export const uploadImage = (req, res) => {
         severity: "error",
       });
     }
+    console.log(req.file);
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // Create a write stream
-    const writestream = gfs.createWriteStream({
-      filename: req.file.originalname,
-    });
+    try {
+      // Convert base64 content to buffer
+      const imageBuffer = Buffer.from(req.file.buffer, "base64");
 
-    // Read the file from disk and pipe it to GridFS
-    fs.createReadStream(path.join(__dirname, "uploads", req.file.filename))
-      .on("error", (err) => {
-        console.log("Error reading file:", err);
+      // Create a write stream
+      const writestream = gfs.createWriteStream({
+        filename: req.file.originalname,
+      });
+
+      // Write the buffer to GridFS
+      writestream.write(imageBuffer);
+
+      // Handle write stream events
+      writestream.on("error", (error) => {
+        console.log("Error uploading file to GridFS:", error);
         return res.status(500).json({
           success: false,
           message: "Error uploading file",
           severity: "error",
         });
-      })
-      .pipe(writestream)
-      .on("error", (err) => {
-        console.log("Error uploading file to GridFS:", err);
-        return res.status(500).json({
-          success: false,
-          message: "Error uploading file",
-          severity: "error",
-        });
-      })
-      .on("finish", () => {
-        fs.unlinkSync(path.join(__dirname, "uploads", req.file.filename));
+      });
+
+      writestream.on("finish", () => {
         return res.status(200).json({
           success: true,
           message: "File uploaded successfully",
           severity: "success",
         });
       });
+
+      // End the write stream
+      writestream.end();
+    } catch (error) {
+      console.error("Error handling file upload:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error handling file upload",
+        severity: "error",
+      });
+    }
   });
 };
 

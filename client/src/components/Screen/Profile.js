@@ -39,7 +39,7 @@ export default function Profile() {
       setLoading(false);
       return;
     } catch (error) {
-      Alert.alert(error.response.data.message);
+      // Alert.alert(error.response.data.message);
       setLoading(false);
       return;
     }

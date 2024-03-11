@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import Loading from "../Shared/Loading";
 import Colors from "../Shared/Colors";
@@ -30,23 +31,29 @@ export default function EditProfile() {
   };
 
   // Function to read file and convert to base64
-  const getImageBinaryData = async (fileUri) => {
+  const getImageBinaryData = async (
+    fileUri,
+    quality = 0.5,
+    maxWidth = 150,
+    maxHeight = 150
+  ) => {
     try {
-      // Read the image file
-      const fileInfo = await FileSystem.getInfoAsync(fileUri);
-      if (!fileInfo.exists) {
-        console.error("Image file does not exist");
+      if (!fileUri) {
         return null;
       }
 
-      // Read the file as binary data
-      const base64Data = await FileSystem.readAsStringAsync(fileUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      // Optional resizing (adjust options as needed)
+      const resizedImage = await ImageManipulator.manipulateAsync(
+        fileUri,
+        [{ resize: { width: maxWidth, height: maxHeight } }],
+        { compress: quality }
+      );
 
-      return base64Data;
+      const response = await FileSystem.readAsStringAsync(resizedImage.uri, {
+        encoding: "base64",
+      });
+      return response;
     } catch (error) {
-      console.error("Error reading image file:", error);
       return null;
     }
   };
@@ -89,16 +96,23 @@ export default function EditProfile() {
       console.log("Failed to convert file to base64");
       return;
     }
-
     const formData = new FormData();
-    formData.append("image", base64Data);
-    formData.append("userId", userId);
+    formData.append("image", {
+      name: `${userId}.jpg`,
+      type: `${pickerResult.assets[0].type}/jpeg`,
+      uri: `data:image/jpeg;base64,${base64Data}`,
+      // uri: pickerResult.assets[0].uri,
+    });
+    // formData.append("image", base64Data);
+    // formData.append("userId", userId);
 
     try {
       // Send the FormData to your server
       const response = await axios.post(`${BASE_URL}/image/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          // Accept: "application/json",
+          // 'Content-Type': 'application/json',
         },
       });
 
