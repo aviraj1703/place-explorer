@@ -1,33 +1,10 @@
 import mongoose from "mongoose";
-import Grid from "gridfs-stream";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-import connectionPromise from "../db.mjs";
 
-let gfs, upload;
+const User = mongoose.model("User");
 
-// Initialize MongoDB connection
-connectionPromise
-  .then(() => {
-    // Create GridFS stream using native MongoDB connection
-    gfs = new Grid(mongoose.connection.db, mongoose.mongo);
-
-    // Define uploadImage function
-    const storage = multer.diskStorage({
-      destination: function (req, file, cb) {
-        cb(null, "uploads/");
-      },
-      filename: function (req, file, cb) {
-        cb(null, file.originalname);
-      },
-    });
-
-    upload = multer().single("image");
-  })
-  .catch((error) => {
-    console.error(`Failed to connect to MongoDB due to:\n${error}`);
-  });
+// multer upload
+const upload = multer().single("image");
 
 // Upload an image
 export const uploadImage = (req, res) => {
@@ -40,43 +17,39 @@ export const uploadImage = (req, res) => {
         severity: "error",
       });
     }
-    console.log(req.file);
+
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
     try {
-      // Convert base64 content to buffer
-      const imageBuffer = Buffer.from(req.file.buffer, "base64");
+      // Extract user ID from filename
+      const fileName = req.file.originalname;
+      const userId = fileName.substring(0, fileName.lastIndexOf("."));
+      const userIdObject = new mongoose.Types.ObjectId(userId);
 
-      // Create a write stream
-      const writestream = gfs.createWriteStream({
-        filename: req.file.originalname,
+      // Create a new image document
+      const newImage = {
+        name: req.file.originalname,
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+
+      // Find the user by ID
+      const user = await User.findById({ _id: userIdObject });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Save the image document to the user's profile
+      user.profile = newImage;
+      await user.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "File uploaded successfully",
+        severity: "success",
       });
-
-      // Write the buffer to GridFS
-      writestream.write(imageBuffer);
-
-      // Handle write stream events
-      writestream.on("error", (error) => {
-        console.log("Error uploading file to GridFS:", error);
-        return res.status(500).json({
-          success: false,
-          message: "Error uploading file",
-          severity: "error",
-        });
-      });
-
-      writestream.on("finish", () => {
-        return res.status(200).json({
-          success: true,
-          message: "File uploaded successfully",
-          severity: "success",
-        });
-      });
-
-      // End the write stream
-      writestream.end();
     } catch (error) {
       console.error("Error handling file upload:", error);
       return res.status(500).json({
@@ -91,24 +64,23 @@ export const uploadImage = (req, res) => {
 // Fetch an image
 export const fetchImage = async (req, res) => {
   try {
-    const fileName = req.params.filename; // Example filename without extension
+    const { filename } = req.params;
 
-    // Search for any file with a filename that matches the provided filename (regardless of extension)
-    const file = await gfs.files.findOne({
-      filename: fileName,
-    });
-    if (!file) {
+    // Extract user ID from the imagename
+    const userIdObject = new mongoose.Types.ObjectId(filename);
+
+    const user = await User.findOne({ _id: userIdObject });
+    if (!user || !user.profile) {
       return res.status(404).json({
         success: false,
-        message: "File not found",
-        severity: "error",
+        message: "Profile not found.",
+        severity: "warning",
       });
     }
-
-    // Stream the file directly to the response
-    gfs.createReadStream(file.filename).pipe(res);
+    res.set("Content-Type", user.profile.contentType);
+    res.send(user.profile.data);
   } catch (error) {
-    console.error("Error fetching file from GridFS:", error);
+    console.error("Error fetching file from db:", error);
     return res.status(500).json({
       success: false,
       message: "Error fetching file",
@@ -120,38 +92,31 @@ export const fetchImage = async (req, res) => {
 // Delete an image
 export const deleteImage = async (req, res) => {
   try {
-    const fileName = req.params.filename; // Example filename without extension
+    const { filename } = req.params;
 
-    // Search for any file with a filename that matches the provided filename (regardless of extension)
-    const file = await gfs.files.findOne({
-      filename: fileName,
-    });
-    if (!file) {
+    // Extract user ID from the imagename
+    const userIdObject = new mongoose.Types.ObjectId(filename);
+
+    const user = await User.findOne({ _id: userIdObject });
+    if (!user) {
       return res.status(404).json({
         success: false,
-        message: "File not found",
-        severity: "error",
+        message: "User not found.",
+        severity: "warning",
       });
     }
 
-    // Remove the file from GridFS
-    gfs.remove({ _id: file._id }, (err) => {
-      if (err) {
-        console.error("Error removing file from GridFS:", err);
-        return res.status(500).json({
-          success: false,
-          message: "Error removing file",
-          severity: "error",
-        });
-      }
-      return res.status(200).json({
-        success: true,
-        message: "File removed successfully",
-        severity: "success",
-      });
+    user.profile = null;
+
+    await user.save();
+
+    return res.status(201).json({
+      success: true,
+      message: "Image deleted successfully.",
+      severity: "success",
     });
   } catch (error) {
-    console.error("Error fetching file from GridFS:", error);
+    console.error("Error fetching file from db:", error);
     return res.status(500).json({
       success: false,
       message: "Error fetching file",

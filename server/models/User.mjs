@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+const imageSchema = new mongoose.Schema({
+  name: {type: String, required: true},
+  data: {type: Buffer, required: true},
+  contentType: {type: String, required: true},
+});
+
 const favoritePlaceSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -48,6 +54,9 @@ const userSchema = mongoose.Schema({
   favoriteList: [{
     type: favoritePlaceSchema,
   }],
+  profile: {
+    type: imageSchema,
+  }
 });
 
 mongoose.model("User", userSchema);

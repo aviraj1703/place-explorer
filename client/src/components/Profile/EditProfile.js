@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Image,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
@@ -20,7 +27,7 @@ export default function EditProfile() {
     setLoading(true);
     try {
       const response = await axios.get(`${BASE_URL}/image/${filename}`);
-      setImageUri(response.data.imageUrl);
+      setImageUri(`${BASE_URL}/image/${filename}`);
       setLoading(false);
       return;
     } catch (error) {
@@ -62,7 +69,6 @@ export default function EditProfile() {
     // Request permission to access the device's media library
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      // If permission is not granted, show an alert
       Alert.alert(
         "Permission denied",
         "Permission to access the media library was denied"
@@ -75,21 +81,19 @@ export default function EditProfile() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images, // Limit to images only
       allowsEditing: true, // Enable editing
       aspect: [1, 1], // Maintain a square aspect ratio
-      quality: 1, // Highest quality
+      quality: 0.5, // Highest quality
     });
 
-    // Check if the user canceled the image picker
     if (pickerResult.canceled) {
       console.log("User cancelled image picker");
       return;
     }
 
-    // Check if the selected file is an image
     if (!pickerResult.assets[0].type.startsWith("image")) {
       Alert.alert("Please select an image file");
       return;
     }
-
+    setLoading(true);
     const fileUri = pickerResult.assets[0].uri;
     const base64Data = await getImageBinaryData(fileUri);
     if (!base64Data) {
@@ -97,33 +101,26 @@ export default function EditProfile() {
       return;
     }
     const formData = new FormData();
+    const fileName = fileUri.split("/").pop();
+    const fileType = fileName.split(".").pop();
     formData.append("image", {
       name: `${userId}.jpg`,
-      type: `${pickerResult.assets[0].type}/jpeg`,
-      uri: `data:image/jpeg;base64,${base64Data}`,
-      // uri: pickerResult.assets[0].uri,
+      type: `${pickerResult.assets[0].type}/${fileType}`,
+      uri: `data:${pickerResult.assets[0].type}/${fileType};base64,${base64Data}`,
     });
-    // formData.append("image", base64Data);
-    // formData.append("userId", userId);
-
+    console.log(pickerResult);
     try {
-      // Send the FormData to your server
       const response = await axios.post(`${BASE_URL}/image/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          // Accept: "application/json",
-          // 'Content-Type': 'application/json',
         },
       });
 
-      // Display a success message
       Alert.alert(response.data.message);
-
-      // Fetch the updated user profile
       await fetchUserProfile(userId);
     } catch (error) {
-      // Display an error message
       Alert.alert("Error", error.response.data.message);
+      setLoading(false);
     }
   };
 
@@ -138,27 +135,24 @@ export default function EditProfile() {
         },
         {
           text: "OK",
-          onPress: () => deleteUserProfile(userId, false),
+          onPress: () => deleteUserProfile(userId),
         },
       ],
       { cancelable: false }
     );
   };
 
-  const deleteUserProfile = async (filename, beforeEdit) => {
+  const deleteUserProfile = async (filename) => {
     setLoading(true);
     try {
       const response = await axios.delete(`${BASE_URL}/image/${filename}`);
-      if (!beforeEdit) {
-        Alert.alert(response.data.message);
-        await fetchUserProfile(filename);
-      }
+      Alert.alert(response.data.message);
+      setImageUri(null);
+      setLoading(false);
       return;
     } catch (error) {
-      if (!beforeEdit) {
-        Alert.alert(error.response.data.message);
-        setLoading(false);
-      }
+      Alert.alert(error.response.data.message);
+      setLoading(false);
       return;
     }
   };
@@ -205,10 +199,10 @@ const styles = StyleSheet.create({
   editBar: {
     width: "100%",
     height: "fit-content",
+    flexDirection: "row",
     marginTop: "5%",
     display: "flex",
-    justifyContent: "center",
-    gap: 10,
+    justifyContent: "space-around",
     alignItems: "center",
   },
 });

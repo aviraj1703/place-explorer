@@ -35,11 +35,11 @@ export default function Profile() {
     setLoading(true);
     try {
       const response = await axios.get(`${BASE_URL}/image/${filename}`);
-      setImageUri(response.data.imageUrl);
+      setImageUri(`${BASE_URL}/image/${filename}`);
       setLoading(false);
       return;
     } catch (error) {
-      // Alert.alert(error.response.data.message);
+      Alert.alert(error.response.data.message);
       setLoading(false);
       return;
     }
@@ -67,10 +67,7 @@ export default function Profile() {
               />
             </View>
           ) : (
-            <Image
-              source={require("../../../assets/Aviraj.jpg")}
-              style={styles.logo}
-            />
+            <Image source={{ uri: imageUri }} style={styles.logo} />
           )}
           <View style={styles.field}>
             <FontAwesome name="user-o" size={20} color={Colors.black} />
