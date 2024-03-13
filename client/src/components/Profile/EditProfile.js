@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  ImageBackground,
+  Button,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
@@ -27,7 +29,9 @@ export default function EditProfile() {
     setLoading(true);
     try {
       const response = await axios.get(`${BASE_URL}/image/${filename}`);
-      setImageUri(`${BASE_URL}/image/${filename}`);
+      setImageUri(
+        `data:${response.data.contentType};base64,${response.data.imageData}`
+      );
       setLoading(false);
       return;
     } catch (error) {
@@ -37,12 +41,11 @@ export default function EditProfile() {
     }
   };
 
-  // Function to read file and convert to base64
   const getImageBinaryData = async (
     fileUri,
     quality = 0.5,
-    maxWidth = 150,
-    maxHeight = 150
+    maxWidth = 200,
+    maxHeight = 200
   ) => {
     try {
       if (!fileUri) {
@@ -81,7 +84,7 @@ export default function EditProfile() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images, // Limit to images only
       allowsEditing: true, // Enable editing
       aspect: [1, 1], // Maintain a square aspect ratio
-      quality: 0.5, // Highest quality
+      quality: 1, // Highest quality
     });
 
     if (pickerResult.canceled) {
@@ -93,22 +96,26 @@ export default function EditProfile() {
       Alert.alert("Please select an image file");
       return;
     }
+
     setLoading(true);
+
     const fileUri = pickerResult.assets[0].uri;
     const base64Data = await getImageBinaryData(fileUri);
     if (!base64Data) {
       console.log("Failed to convert file to base64");
       return;
     }
+
     const formData = new FormData();
     const fileName = fileUri.split("/").pop();
     const fileType = fileName.split(".").pop();
     formData.append("image", {
-      name: `${userId}.jpg`,
+      name: `${fileName}`,
       type: `${pickerResult.assets[0].type}/${fileType}`,
       uri: `data:${pickerResult.assets[0].type}/${fileType};base64,${base64Data}`,
     });
-    console.log(pickerResult);
+    formData.append("userId", userId);
+
     try {
       const response = await axios.post(`${BASE_URL}/image/upload`, formData, {
         headers: {
@@ -164,43 +171,76 @@ export default function EditProfile() {
   if (loading) return <Loading />;
   return (
     <View style={styles.container}>
-      {!imageUri ? (
-        <FontAwesome name="user-circle-o" size={150} color={Colors.black} />
-      ) : (
-        <Image source={{ uri: imageUri }} style={styles.logo} />
-      )}
-      <View style={styles.editBar}>
-        <TouchableOpacity onPress={editUserProfile}>
-          <FontAwesome5 name="user-edit" size={40} color={Colors.bayernBlue} />
-        </TouchableOpacity>
-        {imageUri && (
-          <TouchableOpacity onPress={confirmRemove}>
-            <FontAwesome5 name="user-times" size={40} color={Colors.crimson} />
-          </TouchableOpacity>
-        )}
-      </View>
+      <ImageBackground
+        source={require("../../../assets/ProfileBackground.jpg")}
+        style={{ flex: 1, justifyContent: "flex-end", width: "100%" }}
+        resizeMode="cover"
+      >
+        <View style={styles.subContainer}>
+          {!imageUri ? (
+            <View style={styles.logo}>
+              <FontAwesome
+                name="user-circle-o"
+                size={150}
+                color={Colors.black}
+              />
+            </View>
+          ) : (
+            <Image source={{ uri: imageUri }} style={styles.logo} />
+          )}
+          <View style={styles.editBar}>
+            {/* <TouchableOpacity onPress={editUserProfile}>
+              <FontAwesome5
+                name="user-edit"
+                size={40}
+                color={Colors.bayernBlue}
+              />
+            </TouchableOpacity> */}
+            <Button
+              title="Upload Image"
+              color={Colors.bayernBlue}
+              onPress={editUserProfile}
+            />
+            {imageUri && (
+              <Button
+                title="Remove Image"
+                color={Colors.crimson}
+                onPress={confirmRemove}
+              />
+            )}
+          </View>
+        </View>
+      </ImageBackground>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: "100%",
+    width: "100%",
     display: "flex",
-    justifyContent: "center",
-    gap: 5,
-    alignItems: "center",
+  },
+  subContainer: {
+    minHeight: "70%",
+    width: "100%",
+    borderRadius: 50,
+    backgroundColor: Colors.white,
+    padding: "5%",
   },
   logo: {
     height: 150,
     width: 150,
+    top: "-15%",
     borderRadius: 100,
+    left: "30%",
+    backgroundColor: Colors.white,
   },
   editBar: {
     width: "100%",
     height: "fit-content",
+    marginTop: "10%",
     flexDirection: "row",
-    marginTop: "5%",
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",

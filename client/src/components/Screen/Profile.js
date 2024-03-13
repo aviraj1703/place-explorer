@@ -35,11 +35,13 @@ export default function Profile() {
     setLoading(true);
     try {
       const response = await axios.get(`${BASE_URL}/image/${filename}`);
-      setImageUri(`${BASE_URL}/image/${filename}`);
+      setImageUri(
+        `data:${response.data.contentType};base64,${response.data.imageData}`
+      );
       setLoading(false);
       return;
     } catch (error) {
-      Alert.alert(error.response.data.message);
+      console.error(error.response.data.message);
       setLoading(false);
       return;
     }

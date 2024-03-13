@@ -23,10 +23,8 @@ export const uploadImage = (req, res) => {
     }
 
     try {
-      // Extract user ID from filename
-      const fileName = req.file.originalname;
-      const userId = fileName.substring(0, fileName.lastIndexOf("."));
-      const userIdObject = new mongoose.Types.ObjectId(userId);
+      // Extract user ID from body
+      const userIdObject = new mongoose.Types.ObjectId(req.body.userId);
 
       // Create a new image document
       const newImage = {
@@ -77,8 +75,13 @@ export const fetchImage = async (req, res) => {
         severity: "warning",
       });
     }
-    res.set("Content-Type", user.profile.contentType);
-    res.send(user.profile.data);
+    // res.set("Content-Type", user.profile.contentType);
+    // res.send(user.profile.data);
+    const base64ImageData = user.profile.data.toString('base64');
+    return res.status(200).json({
+      imageData: base64ImageData,
+      contentType: user.profile.contentType
+    })
   } catch (error) {
     console.error("Error fetching file from db:", error);
     return res.status(500).json({
@@ -112,7 +115,7 @@ export const deleteImage = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: "Image deleted successfully.",
+      message: "Image removed successfully.",
       severity: "success",
     });
   } catch (error) {
