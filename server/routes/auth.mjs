@@ -78,7 +78,7 @@ export const signUp = async (request, response) => {
       },
       secret
     );
-
+    console.log("Registered.");
     return response.status(201).json({
       authToken: `Bearer ${jwt_token}`,
       success: true,
@@ -126,6 +126,7 @@ export const signIn = async (request, response) => {
         },
         secret
       );
+      console.log("Signed in.");
       return response.status(200).json({
         authToken: `Bearer ${jwt_token}`,
         success: true,
@@ -150,6 +151,7 @@ export const getUser = async (request, response) => {
   // Send user info in response
   try {
     const user = await User.findOne({ _id });
+    console.log("Details sent.");
     return response.status(200).json({
       success: true,
       id: _id,
@@ -187,7 +189,7 @@ export const resetPassword = async (request, response) => {
       text: `<p>Your password has been changed successfully.</p>`,
     };
     await sendEmail(email, message);
-
+    console.log("Password is reset.");
     return response.status(201).json({
       success: true,
       message: "Please login with your new password.",

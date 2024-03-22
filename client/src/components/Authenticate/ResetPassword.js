@@ -42,6 +42,7 @@ export default function ResetPassword() {
       return;
     }
     setLoading(true);
+    console.log("Reset page.");
     try {
       const response = await axios.post(
         `${BASE_URL}/reset`,

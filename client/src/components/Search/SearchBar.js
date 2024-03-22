@@ -1,10 +1,42 @@
 import { View, Text, Image, TextInput, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Colors from "../Shared/Colors";
 import Size from "../Shared/Size";
+import { BASE_URL } from "@env";
+import axios from "axios";
+import Loading from "../Shared/Loading";
+import { UserDetailsContext } from "../Context/UserDetailsContext";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function SearchBar({ setSearchText }) {
+  const { location, userName, userEmail, userId } =
+    useContext(UserDetailsContext);
   const [searchInput, setSearchInput] = useState();
+  const [loading, setLoading] = useState(false);
+  const [imageUri, setImageUri] = useState(null);
+
+  const fetchUserProfile = async (filename) => {
+    setLoading(true);
+    console.log("fetch Search page.");
+    try {
+      const response = await axios.get(`${BASE_URL}/image/${filename}`);
+      setImageUri(
+        `data:${response.data.contentType};base64,${response.data.imageData}`
+      );
+      setLoading(false);
+      return;
+    } catch (error) {
+      console.error(error.response.data.message);
+      setLoading(false);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    fetchUserProfile(userId);
+  }, []);
+
+  if (loading) return <Loading />;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -19,10 +51,13 @@ export default function SearchBar({ setSearchText }) {
           onChangeText={(value) => setSearchInput(value)}
           onSubmitEditing={() => setSearchText(searchInput)}
         />
-        <Image
-          source={require("../../../assets/Aviraj.jpg")}
-          style={styles.userImage}
-        />
+        {!imageUri ? (
+          <View style={styles.userImage}>
+            <FontAwesome name="user-circle-o" size={35} color={Colors.black} />
+          </View>
+        ) : (
+          <Image source={{ uri: imageUri }} style={styles.userImage} />
+        )}
       </View>
     </View>
   );

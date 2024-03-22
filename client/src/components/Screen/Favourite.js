@@ -36,6 +36,7 @@ export default function Favourite() {
 
   const getFavList = async () => {
     setLoading(true);
+    console.log("get Favourite page.");
     const access_token = await AsyncStorage.getItem("token");
     try {
       const response = await axios.get(`${BASE_URL}/getFavourite`, {
@@ -56,6 +57,7 @@ export default function Favourite() {
 
   const removeFromList = async (value) => {
     setLoading(true);
+    console.log("remove Favourite page.");
     try {
       const response = await axios.delete(
         `${BASE_URL}/addToFavourite`,

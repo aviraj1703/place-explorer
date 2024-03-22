@@ -27,6 +27,7 @@ export default function EditProfile() {
 
   const fetchUserProfile = async (filename) => {
     setLoading(true);
+    console.log("fetch Edit page.");
     try {
       const response = await axios.get(`${BASE_URL}/image/${filename}`);
       setImageUri(
@@ -98,6 +99,7 @@ export default function EditProfile() {
     }
 
     setLoading(true);
+    console.log("upload Edit page.");
 
     const fileUri = pickerResult.assets[0].uri;
     const base64Data = await getImageBinaryData(fileUri);
@@ -151,6 +153,7 @@ export default function EditProfile() {
 
   const deleteUserProfile = async (filename) => {
     setLoading(true);
+    console.log("delete Edit page.");
     try {
       const response = await axios.delete(`${BASE_URL}/image/${filename}`);
       Alert.alert(response.data.message);

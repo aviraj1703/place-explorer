@@ -33,6 +33,7 @@ export default function Profile() {
 
   const fetchUserProfile = async (filename) => {
     setLoading(true);
+    console.log("fetch Profile page.");
     try {
       const response = await axios.get(`${BASE_URL}/image/${filename}`);
       setImageUri(

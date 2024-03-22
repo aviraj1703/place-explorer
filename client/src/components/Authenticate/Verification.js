@@ -25,7 +25,7 @@ export default function Verification() {
 
   useEffect(() => {
     setUser(param.user);
-  }, [user]);
+  }, []);
 
   const verifyUser = async () => {
     if (user.pin !== Number(code)) {
@@ -33,6 +33,7 @@ export default function Verification() {
       return;
     }
     setLoading(true);
+    console.log("Verification page.");
     if (user.isItSingUp) {
       try {
         const response = await axios.post(

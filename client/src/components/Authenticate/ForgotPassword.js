@@ -29,6 +29,7 @@ export default function ForgotPassword() {
       return;
     }
     setLoading(true);
+    console.log("Forgot Page.");
     try {
       const response = await axios.post(
         `${BASE_URL}/sendEmail`,

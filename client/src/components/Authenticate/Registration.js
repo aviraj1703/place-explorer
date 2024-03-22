@@ -57,6 +57,7 @@ export default function Registration() {
       return;
     }
     setLoading(true);
+    console.log("Registration Page.");
     try {
       const response = await axios.post(
         `${BASE_URL}/sendEmail`,
