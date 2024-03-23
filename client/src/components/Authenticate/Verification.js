@@ -16,13 +16,14 @@ import { FRONTEND_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loading from "../Shared/Loading";
 
+const BASE_URL = FRONTEND_URL;
+
 export default function Verification() {
   const [user, setUser] = useState(null);
   const [code, setCode] = useState();
   const param = useRoute().params;
   const navigator = useNavigation();
   const [loading, setLoading] = useState(false);
-  const BASE_URL = FRONTEND_URL;
 
   useEffect(() => {
     setUser(param.user);
@@ -34,7 +35,6 @@ export default function Verification() {
       return;
     }
     setLoading(true);
-    console.log("Verification page.");
     if (user.isItSingUp) {
       try {
         const response = await axios.post(
@@ -56,7 +56,6 @@ export default function Verification() {
         setLoading(false);
         return;
       } catch (error) {
-        console.log(error.response.data.message);
         Alert.alert(error.response.data.message);
         setLoading(false);
         return;

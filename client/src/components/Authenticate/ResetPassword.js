@@ -19,6 +19,8 @@ import { FRONTEND_URL } from "@env";
 import Loading from "../Shared/Loading";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const BASE_URL = FRONTEND_URL;
+
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
@@ -27,7 +29,6 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const param = useRoute().params;
   const navigator = useNavigation();
-  const BASE_URL = FRONTEND_URL;
 
   useEffect(() => {
     setEmail(param.email);
@@ -43,7 +44,6 @@ export default function ResetPassword() {
       return;
     }
     setLoading(true);
-    console.log("Reset page.");
     try {
       const response = await axios.post(
         `${BASE_URL}/reset`,

@@ -16,11 +16,12 @@ import axios from "axios";
 import { FRONTEND_URL } from "@env";
 import Loading from "../Shared/Loading";
 
+const BASE_URL = FRONTEND_URL;
+
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const navigator = useNavigation();
   const [loading, setLoading] = useState(false);
-  const BASE_URL = FRONTEND_URL;
 
   const verifyUser = async () => {
     setEmail(email.toLowerCase());
@@ -30,7 +31,6 @@ export default function ForgotPassword() {
       return;
     }
     setLoading(true);
-    console.log("Forgot Page.");
     try {
       const response = await axios.post(
         `${BASE_URL}/sendEmail`,

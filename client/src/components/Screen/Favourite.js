@@ -18,14 +18,14 @@ import { UserDetailsContext } from "../Context/UserDetailsContext";
 import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import Colors from "../Shared/Colors";
 
+const BASE_URL = FRONTEND_URL;
+
 export default function Favourite() {
   const { location, userName, userEmail, userId } =
     useContext(UserDetailsContext);
   const [loading, setLoading] = useState(false);
   const [placeList, setPlaceList] = useState([]);
-  const [placeId, setPlaceId] = useState("");
   const navigator = useNavigation();
-  const BASE_URL = FRONTEND_URL;
 
   const onPlaceClick = (item) => {
     navigator.navigate("Place Details", { Item: item });
@@ -37,7 +37,6 @@ export default function Favourite() {
 
   const getFavList = async () => {
     setLoading(true);
-    console.log("get Favourite page.");
     const access_token = await AsyncStorage.getItem("token");
     try {
       const response = await axios.get(`${BASE_URL}/getFavourite`, {
@@ -58,7 +57,6 @@ export default function Favourite() {
 
   const removeFromList = async (value) => {
     setLoading(true);
-    console.log("remove Favourite page.");
     try {
       const response = await axios.delete(
         `${BASE_URL}/addToFavourite`,
@@ -76,7 +74,6 @@ export default function Favourite() {
       await getFavList();
     } catch (error) {
       Alert.alert(error.response.data.message);
-    } finally {
       setLoading(false);
     }
   };

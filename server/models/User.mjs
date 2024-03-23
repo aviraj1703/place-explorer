@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const imageSchema = new mongoose.Schema({
-  name: {type: String, required: true, unique: false},
-  data: {type: Buffer, required: true, unique: false},
-  contentType: {type: String, required: true, unique: false},
+  name: { type: String, required: true, default: "" },
+  data: { type: Buffer, required: true, default: null },
+  contentType: { type: String, required: true, default: "" },
 });
 
 const favoritePlaceSchema = new mongoose.Schema({
@@ -25,7 +25,7 @@ const favoritePlaceSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: undefined
+    default: undefined,
   },
   latitude: {
     type: Number,
@@ -34,7 +34,7 @@ const favoritePlaceSchema = new mongoose.Schema({
   longitude: {
     type: Number,
     required: true,
-  }
+  },
 });
 
 const userSchema = mongoose.Schema({
@@ -51,12 +51,14 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  favoriteList: [{
-    type: favoritePlaceSchema,
-  }],
+  favoriteList: [
+    {
+      type: favoritePlaceSchema,
+    },
+  ],
   profile: {
     type: imageSchema,
-  }
+  },
 });
 
 mongoose.model("User", userSchema);

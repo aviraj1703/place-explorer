@@ -18,13 +18,14 @@ import { FRONTEND_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loading from "../Shared/Loading";
 
+const BASE_URL = FRONTEND_URL;
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigator = useNavigation();
-  const BASE_URL = FRONTEND_URL;
 
   const loginAction = async () => {
     setEmail(email.toLowerCase());

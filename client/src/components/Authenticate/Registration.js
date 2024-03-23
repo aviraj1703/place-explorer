@@ -18,6 +18,8 @@ import axios from "axios";
 import { FRONTEND_URL } from "@env";
 import Loading from "../Shared/Loading";
 
+const BASE_URL = FRONTEND_URL;
+
 export default function Registration() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -27,7 +29,6 @@ export default function Registration() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigator = useNavigation();
-  const BASE_URL = FRONTEND_URL;
 
   const enableSignUpButton = () => {
     if (name !== "" && email !== "" && password !== "" && rePassword !== "")
@@ -58,7 +59,6 @@ export default function Registration() {
       return;
     }
     setLoading(true);
-    console.log("Registration Page.", BASE_URL);
     try {
       const response = await axios.post(
         `${BASE_URL}/sendEmail`,

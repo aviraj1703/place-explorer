@@ -8,17 +8,17 @@ import Loading from "../Shared/Loading";
 import { UserDetailsContext } from "../Context/UserDetailsContext";
 import { FontAwesome } from "@expo/vector-icons";
 
+const BASE_URL = FRONTEND_URL;
+
 export default function SearchBar({ setSearchText }) {
   const { location, userName, userEmail, userId } =
     useContext(UserDetailsContext);
   const [searchInput, setSearchInput] = useState();
   const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState(null);
-  const BASE_URL = FRONTEND_URL;
 
   const fetchUserProfile = async (filename) => {
     setLoading(true);
-    console.log("fetch Search page.");
     try {
       const response = await axios.get(`${BASE_URL}/image/${filename}`);
       setImageUri(
@@ -27,7 +27,6 @@ export default function SearchBar({ setSearchText }) {
       setLoading(false);
       return;
     } catch (error) {
-      console.error(error.response.data.message);
       setLoading(false);
       return;
     }

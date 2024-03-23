@@ -18,6 +18,8 @@ import { UserDetailsContext } from "../Context/UserDetailsContext";
 import { FRONTEND_URL } from "@env";
 import axios from "axios";
 
+const BASE_URL = FRONTEND_URL;
+
 export default function PlaceDetailsItem({ place }) {
   const { location, userName, userEmail, userId } =
     useContext(UserDetailsContext);
@@ -27,17 +29,14 @@ export default function PlaceDetailsItem({ place }) {
     placeAddress = place.vicinity ? place.vicinity : place.formatted_address;
 
   const [loading, setLoading] = useState(false);
-  const BASE_URL = FRONTEND_URL;
-
   const addToFavourite = async () => {
     setLoading(true);
     let favoriteList = {};
-    if (place.image){
+    if (place.image) {
       Alert.alert("Already added to the favourite list.");
       setLoading(false);
       return;
-    }
-    else if (place.photos)
+    } else if (place.photos)
       favoriteList = {
         name: place.name,
         vicinity: placeAddress,

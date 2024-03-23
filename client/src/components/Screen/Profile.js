@@ -24,17 +24,17 @@ import { FRONTEND_URL } from "@env";
 import axios from "axios";
 import Loading from "../Shared/Loading";
 
+const BASE_URL = FRONTEND_URL;
+
 export default function Profile() {
   const { location, userName, userEmail, userId } =
     useContext(UserDetailsContext);
   const navigator = useNavigation();
   const [imageUri, setImageUri] = useState(null);
   const [loading, setLoading] = useState(false);
-  const BASE_URL = FRONTEND_URL;
 
   const fetchUserProfile = async (filename) => {
     setLoading(true);
-    console.log("fetch Profile page.");
     try {
       const response = await axios.get(`${BASE_URL}/image/${filename}`);
       setImageUri(
@@ -43,7 +43,6 @@ export default function Profile() {
       setLoading(false);
       return;
     } catch (error) {
-      console.error(error.response.data.message);
       setLoading(false);
       return;
     }

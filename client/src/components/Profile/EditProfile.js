@@ -19,12 +19,13 @@ import axios from "axios";
 import { UserDetailsContext } from "../Context/UserDetailsContext";
 import * as FileSystem from "expo-file-system";
 
+const BASE_URL = FRONTEND_URL;
+
 export default function EditProfile() {
   const { location, userName, userEmail, userId } =
     useContext(UserDetailsContext);
   const [imageUri, setImageUri] = useState(null);
   const [loading, setLoading] = useState(false);
-  const BASE_URL = FRONTEND_URL;
 
   const fetchUserProfile = async (filename) => {
     setLoading(true);
