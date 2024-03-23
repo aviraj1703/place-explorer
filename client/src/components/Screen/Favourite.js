@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "@env";
+import { FRONTEND_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loading from "../Shared/Loading";
 import { ScrollView } from "react-native-virtualized-view";
@@ -25,6 +25,7 @@ export default function Favourite() {
   const [placeList, setPlaceList] = useState([]);
   const [placeId, setPlaceId] = useState("");
   const navigator = useNavigation();
+  const BASE_URL = FRONTEND_URL;
 
   const onPlaceClick = (item) => {
     navigator.navigate("Place Details", { Item: item });

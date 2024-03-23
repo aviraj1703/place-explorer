@@ -13,13 +13,14 @@ import Colors from "../Shared/Colors";
 import validator from "validator";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import { BASE_URL } from "@env";
+import { FRONTEND_URL } from "@env";
 import Loading from "../Shared/Loading";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const navigator = useNavigation();
   const [loading, setLoading] = useState(false);
+  const BASE_URL = FRONTEND_URL;
 
   const verifyUser = async () => {
     setEmail(email.toLowerCase());

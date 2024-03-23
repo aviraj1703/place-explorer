@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const imageSchema = new mongoose.Schema({
-  name: {type: String, required: true},
-  data: {type: Buffer, required: true},
-  contentType: {type: String, required: true},
+  name: {type: String, required: true, unique: false},
+  data: {type: Buffer, required: true, unique: false},
+  contentType: {type: String, required: true, unique: false},
 });
 
 const favoritePlaceSchema = new mongoose.Schema({

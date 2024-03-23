@@ -14,7 +14,7 @@ import * as ImageManipulator from "expo-image-manipulator";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import Loading from "../Shared/Loading";
 import Colors from "../Shared/Colors";
-import { BASE_URL } from "@env";
+import { FRONTEND_URL } from "@env";
 import axios from "axios";
 import { UserDetailsContext } from "../Context/UserDetailsContext";
 import * as FileSystem from "expo-file-system";
@@ -24,6 +24,7 @@ export default function EditProfile() {
     useContext(UserDetailsContext);
   const [imageUri, setImageUri] = useState(null);
   const [loading, setLoading] = useState(false);
+  const BASE_URL = FRONTEND_URL;
 
   const fetchUserProfile = async (filename) => {
     setLoading(true);

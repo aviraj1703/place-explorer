@@ -20,7 +20,7 @@ import {
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BASE_URL } from "@env";
+import { FRONTEND_URL } from "@env";
 import axios from "axios";
 import Loading from "../Shared/Loading";
 
@@ -30,6 +30,7 @@ export default function Profile() {
   const navigator = useNavigation();
   const [imageUri, setImageUri] = useState(null);
   const [loading, setLoading] = useState(false);
+  const BASE_URL = FRONTEND_URL;
 
   const fetchUserProfile = async (filename) => {
     setLoading(true);

@@ -15,7 +15,7 @@ import { Checkbox } from "react-native-paper";
 import validator from "validator";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
-import { BASE_URL } from "@env";
+import { FRONTEND_URL } from "@env";
 import Loading from "../Shared/Loading";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -27,6 +27,7 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const param = useRoute().params;
   const navigator = useNavigation();
+  const BASE_URL = FRONTEND_URL;
 
   useEffect(() => {
     setEmail(param.email);

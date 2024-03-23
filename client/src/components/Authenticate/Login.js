@@ -14,7 +14,7 @@ import Colors from "../Shared/Colors";
 import validator from "validator";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import { BASE_URL } from "@env";
+import { FRONTEND_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loading from "../Shared/Loading";
 
@@ -24,6 +24,8 @@ export default function Login() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigator = useNavigation();
+  const BASE_URL = FRONTEND_URL;
+
   const loginAction = async () => {
     setEmail(email.toLowerCase());
     const isValidEmail = validator.isEmail(email);
@@ -32,7 +34,6 @@ export default function Login() {
       return;
     }
     setLoading(true);
-    console.log("Login Page.");
     try {
       const response = await axios.post(
         `${BASE_URL}/signin`,

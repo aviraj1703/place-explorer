@@ -1,9 +1,10 @@
 import axios from "axios";
-import { BASE_URL } from "@env";
+import { FRONTEND_URL } from "@env";
 import { Alert } from "react-native";
 
 export const getUser = async (access_token) => {
   console.log("Getting user details...");
+  const BASE_URL = FRONTEND_URL;
   try {
     const response = await axios.get(`${BASE_URL}/userDetails`, {
       headers: {

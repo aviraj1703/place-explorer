@@ -12,7 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "../Shared/Colors";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
-import { BASE_URL } from "@env";
+import { FRONTEND_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loading from "../Shared/Loading";
 
@@ -22,6 +22,7 @@ export default function Verification() {
   const param = useRoute().params;
   const navigator = useNavigation();
   const [loading, setLoading] = useState(false);
+  const BASE_URL = FRONTEND_URL;
 
   useEffect(() => {
     setUser(param.user);
@@ -55,6 +56,7 @@ export default function Verification() {
         setLoading(false);
         return;
       } catch (error) {
+        console.log(error.response.data.message);
         Alert.alert(error.response.data.message);
         setLoading(false);
         return;

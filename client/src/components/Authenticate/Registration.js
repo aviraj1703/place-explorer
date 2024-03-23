@@ -15,7 +15,7 @@ import { Checkbox } from "react-native-paper";
 import validator from "validator";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import { BASE_URL } from "@env";
+import { FRONTEND_URL } from "@env";
 import Loading from "../Shared/Loading";
 
 export default function Registration() {
@@ -27,6 +27,7 @@ export default function Registration() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigator = useNavigation();
+  const BASE_URL = FRONTEND_URL;
 
   const enableSignUpButton = () => {
     if (name !== "" && email !== "" && password !== "" && rePassword !== "")
@@ -57,7 +58,7 @@ export default function Registration() {
       return;
     }
     setLoading(true);
-    console.log("Registration Page.");
+    console.log("Registration Page.", BASE_URL);
     try {
       const response = await axios.post(
         `${BASE_URL}/sendEmail`,

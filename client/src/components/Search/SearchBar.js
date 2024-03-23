@@ -2,7 +2,7 @@ import { View, Text, Image, TextInput, StyleSheet } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import Colors from "../Shared/Colors";
 import Size from "../Shared/Size";
-import { BASE_URL } from "@env";
+import { FRONTEND_URL } from "@env";
 import axios from "axios";
 import Loading from "../Shared/Loading";
 import { UserDetailsContext } from "../Context/UserDetailsContext";
@@ -14,6 +14,7 @@ export default function SearchBar({ setSearchText }) {
   const [searchInput, setSearchInput] = useState();
   const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState(null);
+  const BASE_URL = FRONTEND_URL;
 
   const fetchUserProfile = async (filename) => {
     setLoading(true);

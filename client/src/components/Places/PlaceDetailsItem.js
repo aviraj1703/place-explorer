@@ -15,7 +15,7 @@ import Direction from "../Services/Direction";
 import Share from "../Services/Share";
 import Loading from "../Shared/Loading";
 import { UserDetailsContext } from "../Context/UserDetailsContext";
-import { BASE_URL } from "@env";
+import { FRONTEND_URL } from "@env";
 import axios from "axios";
 
 export default function PlaceDetailsItem({ place }) {
@@ -27,6 +27,7 @@ export default function PlaceDetailsItem({ place }) {
     placeAddress = place.vicinity ? place.vicinity : place.formatted_address;
 
   const [loading, setLoading] = useState(false);
+  const BASE_URL = FRONTEND_URL;
 
   const addToFavourite = async () => {
     setLoading(true);
