@@ -17,7 +17,7 @@ router.post("/reset", resetPassword);
 // list.mjs
 router.post("/addToFavourite", addToFavourite);
 router.get("/getFavourite", verifyToken, getFavourite);
-router.delete("/addToFavourite", removeFavourite);
+router.delete("/removeFromFavourite/:placeId/:userId", removeFavourite);
 
 // profile.mjs
 router.post("/image/upload", uploadImage);

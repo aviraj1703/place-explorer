@@ -59,11 +59,7 @@ export default function Favourite() {
     setLoading(true);
     try {
       const response = await axios.delete(
-        `${BASE_URL}/addToFavourite`,
-        {
-          place_id: value,
-          _id: userId,
-        },
+        `${BASE_URL}/removeFromFavourite/${value}/${userId}`,
         {
           headers: {
             "Content-Type": "application/json",

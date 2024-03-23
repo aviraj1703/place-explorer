@@ -42,7 +42,6 @@ export const uploadImage = (req, res) => {
       // Save the image document to the user's profile
       user.profile = newImage;
       await user.save();
-      console.log("Image uploaded.");
       return res.status(200).json({
         success: true,
         message: "File uploaded successfully",
@@ -76,7 +75,6 @@ export const fetchImage = async (req, res) => {
       });
     }
     const base64ImageData = user.profile.data.toString("base64");
-    console.log("Image fetched.");
     return res.status(200).json({
       imageData: base64ImageData,
       contentType: user.profile.contentType,
@@ -108,10 +106,11 @@ export const deleteImage = async (req, res) => {
       });
     }
 
-    user.profile = null;
+    user.profile.name = "";
+    user.profile.data = null;
+    user.profile.contentType = "";
 
     await user.save();
-    console.log("Image deleted.");
     return res.status(201).json({
       success: true,
       message: "Image removed successfully.",

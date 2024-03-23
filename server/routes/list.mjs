@@ -75,16 +75,22 @@ export const getFavourite = async (request, response) => {
 // Remove place from favourite list
 export const removeFavourite = async (request, response) => {
   // Get the index value and user id
-  const { place_id, _id } = request.body;
+  const { placeId, userId } = request.params;
 
   // Get the user
-  const user = await User.findOne({ _id });
+  const user = await User.findOne({ _id: userId });
+  if (!user)
+    return response.status(404).json({
+      success: false,
+      message: "Place is not found.",
+      severity: "error",
+    });
 
   // Remove particular index value
   const favList = user.favoriteList;
   let idx = -1;
   favList.map((element, index) => {
-    if (element._id.toString() === place_id) {
+    if (element._id.toString() === placeId) {
       idx = index;
       return;
     }
