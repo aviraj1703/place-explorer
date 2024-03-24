@@ -21,6 +21,9 @@ export default function TabNavigation() {
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState(null);
+  const [fetchProfile, setFetchProfile] = useState(true);
+  const [searchProfile, setSearchProfile] = useState(true);
+  const [favListFetch, setFavListFetch] = useState(true);
   const navigator = useNavigation();
 
   useEffect(() => {
@@ -54,7 +57,19 @@ export default function TabNavigation() {
 
   return (
     <UserDetailsContext.Provider
-      value={{ location, userName, userEmail, userId, setLocation }}
+      value={{
+        location,
+        userName,
+        userEmail,
+        userId,
+        setLocation,
+        fetchProfile,
+        setFetchProfile,
+        searchProfile,
+        setSearchProfile,
+        favListFetch,
+        setFavListFetch,
+      }}
     >
       <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen

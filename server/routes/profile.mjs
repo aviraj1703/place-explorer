@@ -80,10 +80,9 @@ export const fetchImage = async (req, res) => {
       contentType: user.profile.contentType,
     });
   } catch (error) {
-    console.error("Error fetching file from db:", error);
     return res.status(500).json({
       success: false,
-      message: "Error fetching file",
+      message: "Profile is not uploaded.",
       severity: "error",
     });
   }

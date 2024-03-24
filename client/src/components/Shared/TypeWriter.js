@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Size from "./Size";
 import Colors from "./Colors";
 
 export default function TypeWriter({ text, delay }) {
@@ -29,10 +28,12 @@ const styles = StyleSheet.create({
   header: {
     width: "100%",
     height: "fit-content",
-    paddingTop: "2%",
+    paddingVertical: "1%",
     paddingHorizontal: "5%",
     marginTop: "10%",
     alignItems: "center",
+    elevation: 2,
+    backgroundColor: Colors.white,
   },
   text: {
     width: "100%",

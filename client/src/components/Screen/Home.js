@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native";
 import React, { useContext, useState } from "react";
-import Header from "../Home/Header";
 import GoogleMapView from "../Home/GoogleMapView";
 import Category from "../Home/Category";
 import GlobalApi from "../Services/GlobalApi";

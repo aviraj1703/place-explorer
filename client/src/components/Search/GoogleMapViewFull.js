@@ -1,8 +1,7 @@
-import { StyleSheet, View, Text, Button, Dimensions } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { StyleSheet, View, Dimensions } from "react-native";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import React, { useContext, useState, useEffect } from "react";
 import { UserDetailsContext } from "../Context/UserDetailsContext";
-import Size from "../Shared/Size";
 import GetLocation from "../Services/GetLocation";
 import PlaceMarker from "../Places/PlaceMarker";
 

@@ -1,47 +1,48 @@
-import { View, Text, Image, TextInput, StyleSheet } from "react-native";
+import { View, Image, TextInput, StyleSheet } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import Colors from "../Shared/Colors";
 import Size from "../Shared/Size";
 import { FRONTEND_URL } from "@env";
 import axios from "axios";
-import Loading from "../Shared/Loading";
 import { UserDetailsContext } from "../Context/UserDetailsContext";
 import { FontAwesome } from "@expo/vector-icons";
-import { useIsFocused } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 const BASE_URL = FRONTEND_URL;
 
 export default function SearchBar({ setSearchText }) {
-  const { location, userName, userEmail, userId } =
-    useContext(UserDetailsContext);
+  const {
+    location,
+    userName,
+    userEmail,
+    userId,
+    setLocation,
+    fetchProfile,
+    setFetchProfile,
+    searchProfile,
+    setSearchProfile,
+  } = useContext(UserDetailsContext);
+  const navigator = useNavigation();
   const [searchInput, setSearchInput] = useState();
-  const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState(null);
-  let isFocused = useIsFocused();
 
   const fetchUserProfile = async (filename) => {
-    setLoading(true);
     try {
       const response = await axios.get(`${BASE_URL}/image/${filename}`);
       setImageUri(
         `data:${response.data.contentType};base64,${response.data.imageData}`
       );
-      setLoading(false);
-      return;
+      setSearchProfile(false);
     } catch (error) {
-      setLoading(false);
-      return;
+      console.log(error.response.data.message);
+      setSearchProfile(false);
     }
   };
 
   useEffect(() => {
-    isFocused = false;
-    fetchUserProfile(userId);
-  }, []);
+    if (searchProfile) fetchUserProfile(userId);
+  }, [searchProfile]);
 
-  // if (isFocused) fetchUserProfile(userId);
-
-  if (loading) return <Loading />;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -58,10 +59,19 @@ export default function SearchBar({ setSearchText }) {
         />
         {!imageUri ? (
           <View style={styles.userImage}>
-            <FontAwesome name="user-circle-o" size={35} color={Colors.black} />
+            <FontAwesome
+              name="user-circle-o"
+              size={35}
+              color={Colors.black}
+              onPress={() => navigator.navigate("Profile_section")}
+            />
           </View>
         ) : (
-          <Image source={{ uri: imageUri }} style={styles.userImage} />
+          <Image
+            source={{ uri: imageUri }}
+            style={styles.userImage}
+            onPress={() => navigator.navigate("Profile_section")}
+          />
         )}
       </View>
     </View>

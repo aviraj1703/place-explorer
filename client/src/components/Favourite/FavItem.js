@@ -29,7 +29,7 @@ export default function FavItem({ place, removeThisItem }) {
         )}
         <View style={styles.details}>
           <Text style={styles.name}>{place.name}</Text>
-          <Text style={styles.address}>{place.vicinity}</Text>
+          <Text style={styles.address} numberOfLines={3}>{place.vicinity}</Text>
           <View style={styles.rating}>
             {place.rating !== undefined ? (
               <Text style={styles.ratingDetails}>{place.rating}</Text>

@@ -21,8 +21,19 @@ import axios from "axios";
 const BASE_URL = FRONTEND_URL;
 
 export default function PlaceDetailsItem({ place }) {
-  const { location, userName, userEmail, userId } =
-    useContext(UserDetailsContext);
+  const {
+    location,
+    userName,
+    userEmail,
+    userId,
+    setLocation,
+    fetchProfile,
+    setFetchProfile,
+    searchProfile,
+    setSearchProfile,
+    favListFetch,
+    setFavListFetch,
+  } = useContext(UserDetailsContext);
 
   let placeAddress = place.vicinity;
   if (placeAddress === undefined)
@@ -69,12 +80,11 @@ export default function PlaceDetailsItem({ place }) {
         }
       );
       setLoading(false);
+      setFavListFetch(true);
       Alert.alert(response.data.message);
-      return;
     } catch (error) {
       Alert.alert(error.response.data.message);
       setLoading(false);
-      return;
     }
   };
 

@@ -17,26 +17,35 @@ import FavItem from "../Favourite/FavItem";
 import { UserDetailsContext } from "../Context/UserDetailsContext";
 import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import Colors from "../Shared/Colors";
-import { useIsFocused } from "@react-navigation/native";
+import TypeWriter from "../Shared/TypeWriter";
 
 const BASE_URL = FRONTEND_URL;
 
 export default function Favourite() {
-  const { location, userName, userEmail, userId } =
-    useContext(UserDetailsContext);
+  const {
+    location,
+    userName,
+    userEmail,
+    userId,
+    setLocation,
+    fetchProfile,
+    setFetchProfile,
+    searchProfile,
+    setSearchProfile,
+    favListFetch,
+    setFavListFetch,
+  } = useContext(UserDetailsContext);
   const [loading, setLoading] = useState(false);
   const [placeList, setPlaceList] = useState([]);
   const navigator = useNavigation();
-  let isFocused = useIsFocused();
 
   const onPlaceClick = (item) => {
     navigator.navigate("Place Details", { Item: item });
   };
 
   useEffect(() => {
-    isFocused = false;
-    getFavList();
-  }, []);
+    if (favListFetch) getFavList();
+  }, [favListFetch]);
 
   const getFavList = async () => {
     setLoading(true);
@@ -50,11 +59,10 @@ export default function Favourite() {
       });
       setPlaceList(await response.data.favoriteList);
       setLoading(false);
-      return;
+      setFavListFetch(false);
     } catch (error) {
       Alert.alert(error.response.data.message);
       setLoading(false);
-      return;
     }
   };
 
@@ -70,7 +78,8 @@ export default function Favourite() {
         }
       );
       Alert.alert(response.data.message);
-      await getFavList();
+      // await getFavList();
+      setFavListFetch(true);
     } catch (error) {
       Alert.alert(error.response.data.message);
       setLoading(false);
@@ -95,8 +104,6 @@ export default function Favourite() {
     );
   };
 
-  // if(isFocused) getFavList();
-
   if (loading) return <Loading />;
   if (placeList.length === 0)
     return (
@@ -111,12 +118,7 @@ export default function Favourite() {
     );
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.loader}>
-        <Text style={styles.name2}>Explore your favourite list..!</Text>
-        <TouchableOpacity onPress={getFavList}>
-          <AntDesign name="reload1" size={20} color={Colors.mediumSeaGreen} />
-        </TouchableOpacity>
-      </View>
+      <TypeWriter text="Explore your favourite list..!" delay={100} />
       <FlatList
         data={placeList}
         renderItem={({ item, index }) => (
@@ -142,8 +144,7 @@ export default function Favourite() {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    padding: 15,
-    marginTop: 30,
+    padding: "1%",
   },
   empty: {
     height: "100%",
@@ -158,20 +159,5 @@ const styles = StyleSheet.create({
     margin: "1%",
     color: Colors.crimson,
     marginTop: "15%",
-  },
-  name2: {
-    fontSize: 20,
-    fontFamily: "Overlock-Bold",
-    margin: "1%",
-    color: Colors.bayernBlue,
-  },
-  loader: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    gap: 2,
-    justifyContent: "space-around",
-    alignItems: "center",
-    marginBottom: "10%",
   },
 });

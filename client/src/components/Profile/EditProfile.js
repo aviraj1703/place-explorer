@@ -1,8 +1,6 @@
 import {
   View,
-  Text,
   StyleSheet,
-  TouchableOpacity,
   Alert,
   Image,
   ImageBackground,
@@ -11,7 +9,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import Loading from "../Shared/Loading";
 import Colors from "../Shared/Colors";
 import { FRONTEND_URL } from "@env";
@@ -22,25 +20,31 @@ import * as FileSystem from "expo-file-system";
 const BASE_URL = FRONTEND_URL;
 
 export default function EditProfile() {
-  const { location, userName, userEmail, userId } =
-    useContext(UserDetailsContext);
+  const {
+    location,
+    userName,
+    userEmail,
+    userId,
+    setLocation,
+    fetchProfile,
+    setFetchProfile,
+    searchProfile,
+    setSearchProfile,
+  } = useContext(UserDetailsContext);
   const [imageUri, setImageUri] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const fetchUserProfile = async (filename) => {
     setLoading(true);
-    console.log("fetch Edit page.");
     try {
       const response = await axios.get(`${BASE_URL}/image/${filename}`);
       setImageUri(
         `data:${response.data.contentType};base64,${response.data.imageData}`
       );
       setLoading(false);
-      return;
     } catch (error) {
       Alert.alert(error.response.data.message);
       setLoading(false);
-      return;
     }
   };
 
@@ -101,7 +105,6 @@ export default function EditProfile() {
     }
 
     setLoading(true);
-    console.log("upload Edit page.");
 
     const fileUri = pickerResult.assets[0].uri;
     const base64Data = await getImageBinaryData(fileUri);
@@ -129,6 +132,8 @@ export default function EditProfile() {
 
       Alert.alert(response.data.message);
       await fetchUserProfile(userId);
+      setFetchProfile(true);
+      setSearchProfile(true);
     } catch (error) {
       Alert.alert("Error", error.response.data.message);
       setLoading(false);
@@ -155,17 +160,16 @@ export default function EditProfile() {
 
   const deleteUserProfile = async (filename) => {
     setLoading(true);
-    console.log("delete Edit page.");
     try {
       const response = await axios.delete(`${BASE_URL}/image/${filename}`);
       Alert.alert(response.data.message);
       setImageUri(null);
       setLoading(false);
-      return;
+      setFetchProfile(true);
+      setSearchProfile(true);
     } catch (error) {
       Alert.alert(error.response.data.message);
       setLoading(false);
-      return;
     }
   };
 
