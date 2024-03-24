@@ -7,6 +7,7 @@ import axios from "axios";
 import Loading from "../Shared/Loading";
 import { UserDetailsContext } from "../Context/UserDetailsContext";
 import { FontAwesome } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 
 const BASE_URL = FRONTEND_URL;
 
@@ -16,6 +17,7 @@ export default function SearchBar({ setSearchText }) {
   const [searchInput, setSearchInput] = useState();
   const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState(null);
+  let isFocused = useIsFocused();
 
   const fetchUserProfile = async (filename) => {
     setLoading(true);
@@ -33,8 +35,11 @@ export default function SearchBar({ setSearchText }) {
   };
 
   useEffect(() => {
+    isFocused = false;
     fetchUserProfile(userId);
   }, []);
+
+  // if (isFocused) fetchUserProfile(userId);
 
   if (loading) return <Loading />;
   return (

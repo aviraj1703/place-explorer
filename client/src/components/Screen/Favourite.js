@@ -17,6 +17,7 @@ import FavItem from "../Favourite/FavItem";
 import { UserDetailsContext } from "../Context/UserDetailsContext";
 import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import Colors from "../Shared/Colors";
+import { useIsFocused } from "@react-navigation/native";
 
 const BASE_URL = FRONTEND_URL;
 
@@ -26,12 +27,14 @@ export default function Favourite() {
   const [loading, setLoading] = useState(false);
   const [placeList, setPlaceList] = useState([]);
   const navigator = useNavigation();
+  let isFocused = useIsFocused();
 
   const onPlaceClick = (item) => {
     navigator.navigate("Place Details", { Item: item });
   };
 
   useEffect(() => {
+    isFocused = false;
     getFavList();
   }, []);
 
@@ -91,6 +94,8 @@ export default function Favourite() {
       { cancelable: false }
     );
   };
+
+  // if(isFocused) getFavList();
 
   if (loading) return <Loading />;
   if (placeList.length === 0)

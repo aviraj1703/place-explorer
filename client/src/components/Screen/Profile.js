@@ -23,6 +23,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FRONTEND_URL } from "@env";
 import axios from "axios";
 import Loading from "../Shared/Loading";
+import { useIsFocused } from "@react-navigation/native";
 
 const BASE_URL = FRONTEND_URL;
 
@@ -32,6 +33,7 @@ export default function Profile() {
   const navigator = useNavigation();
   const [imageUri, setImageUri] = useState(null);
   const [loading, setLoading] = useState(false);
+  let isFocused = useIsFocused();
 
   const fetchUserProfile = async (filename) => {
     setLoading(true);
@@ -49,8 +51,11 @@ export default function Profile() {
   };
 
   useEffect(() => {
+    isFocused = false;
     fetchUserProfile(userId);
   }, []);
+
+  // if(isFocused) fetchUserProfile(userId);
 
   if (loading) return <Loading />;
   return (

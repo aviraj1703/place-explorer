@@ -9,6 +9,7 @@ import { UserDetailsContext } from "../Context/UserDetailsContext";
 import { ScrollView } from "react-native-virtualized-view";
 import GetLocation from "../Services/GetLocation";
 import Loading from "../Shared/Loading";
+import TypeWriter from "../Shared/TypeWriter";
 
 export default function Home() {
   const [placeDetails, setPlaceDetails] = useState(null);
@@ -46,7 +47,7 @@ export default function Home() {
 
   return (
     <ScrollView style={styles.container}>
-      <Header />
+      <TypeWriter text={`Hello ${userName}..!`} delay={100} />
       <GoogleMapView placeList={placeDetails} />
       <Category setChosenCategory={(value) => getNearByPlaces(value)} />
       {placeDetails && <PlaceList placeList={placeDetails} />}

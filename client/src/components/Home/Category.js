@@ -37,7 +37,7 @@ export default function Category({setChosenCategory}) {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    marginTop: "5%",
+    marginTop: "4%",
     alignItems: "center",
   },
   txt: {
