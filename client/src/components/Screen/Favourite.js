@@ -108,17 +108,13 @@ export default function Favourite() {
   if (placeList.length === 0)
     return (
       <View style={styles.empty}>
-        <Text style={styles.name}>Reload</Text>
-        <TouchableOpacity onPress={getFavList}>
-          <AntDesign name="reload1" size={40} color={Colors.mediumSeaGreen} />
-        </TouchableOpacity>
         <Text style={styles.name}>Your list is empty..!</Text>
         <FontAwesome5 name="box-open" size={200} color={Colors.grey} />
       </View>
     );
   return (
     <ScrollView style={styles.container}>
-      <TypeWriter text="Explore your favourite list..!" delay={100} />
+      <TypeWriter text="Explore your favourite list..!" delay={75} />
       <FlatList
         data={placeList}
         renderItem={({ item, index }) => (

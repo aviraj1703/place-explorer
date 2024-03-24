@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
     borderRadius: 15,
     padding: 3,
-    elevation: 1,
+    elevation: 2,
     backgroundColor: Colors.placeDetail,
   },
   txt: {

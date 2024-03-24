@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   list: {
-    width: "90%",
-    marginTop: "2%",
-    padding: 4,
+    width: "fit-content",
+    marginTop: "1%",
+    padding: "2%",
   },
 });

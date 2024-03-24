@@ -27,38 +27,15 @@ import Loading from "../Shared/Loading";
 const BASE_URL = FRONTEND_URL;
 
 export default function Profile() {
-  const {
-    location,
-    userName,
-    userEmail,
-    userId,
-    setLocation,
-    fetchProfile,
-    setFetchProfile,
-  } = useContext(UserDetailsContext);
+  const { location, userName, userEmail, userId, setLocation, imageUri } =
+    useContext(UserDetailsContext);
   const navigator = useNavigation();
-  const [imageUri, setImageUri] = useState(null);
+  const [newImageUri, setNewImageUri] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchUserProfile = async (filename) => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${BASE_URL}/image/${filename}`);
-      setImageUri(
-        `data:${response.data.contentType};base64,${response.data.imageData}`
-      );
-      setLoading(false);
-      setFetchProfile(false);
-    } catch (error) {
-      console.log(error.response.data.message);
-      setLoading(false);
-      setFetchProfile(false);
-    }
-  };
-
   useEffect(() => {
-    if (fetchProfile) fetchUserProfile(userId);
-  }, [fetchProfile]);
+    setNewImageUri(imageUri);
+  }, [imageUri]);
 
   if (loading) return <Loading />;
   return (
@@ -69,7 +46,7 @@ export default function Profile() {
         resizeMode="cover"
       >
         <View style={styles.subContainer}>
-          {!imageUri ? (
+          {!newImageUri ? (
             <View style={styles.logo}>
               <FontAwesome
                 name="user-circle-o"
@@ -78,7 +55,7 @@ export default function Profile() {
               />
             </View>
           ) : (
-            <Image source={{ uri: imageUri }} style={styles.logo} />
+            <Image source={{ uri: newImageUri }} style={styles.logo} />
           )}
           <View style={styles.field}>
             <FontAwesome name="user-o" size={20} color={Colors.black} />

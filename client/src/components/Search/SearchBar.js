@@ -1,4 +1,10 @@
-import { View, Image, TextInput, StyleSheet } from "react-native";
+import {
+  View,
+  Image,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import Colors from "../Shared/Colors";
 import Size from "../Shared/Size";
@@ -11,37 +17,15 @@ import { useNavigation } from "@react-navigation/native";
 const BASE_URL = FRONTEND_URL;
 
 export default function SearchBar({ setSearchText }) {
-  const {
-    location,
-    userName,
-    userEmail,
-    userId,
-    setLocation,
-    fetchProfile,
-    setFetchProfile,
-    searchProfile,
-    setSearchProfile,
-  } = useContext(UserDetailsContext);
+  const { location, userName, userEmail, userId, setLocation, imageUri } =
+    useContext(UserDetailsContext);
   const navigator = useNavigation();
   const [searchInput, setSearchInput] = useState();
-  const [imageUri, setImageUri] = useState(null);
-
-  const fetchUserProfile = async (filename) => {
-    try {
-      const response = await axios.get(`${BASE_URL}/image/${filename}`);
-      setImageUri(
-        `data:${response.data.contentType};base64,${response.data.imageData}`
-      );
-      setSearchProfile(false);
-    } catch (error) {
-      console.log(error.response.data.message);
-      setSearchProfile(false);
-    }
-  };
+  const [newImageUri, setNewImageUri] = useState(null);
 
   useEffect(() => {
-    if (searchProfile) fetchUserProfile(userId);
-  }, [searchProfile]);
+    setNewImageUri(imageUri);
+  }, [imageUri]);
 
   return (
     <View style={styles.container}>
@@ -57,22 +41,19 @@ export default function SearchBar({ setSearchText }) {
           onChangeText={(value) => setSearchInput(value)}
           onSubmitEditing={() => setSearchText(searchInput)}
         />
-        {!imageUri ? (
-          <View style={styles.userImage}>
-            <FontAwesome
-              name="user-circle-o"
-              size={35}
-              color={Colors.black}
-              onPress={() => navigator.navigate("Profile_section")}
-            />
-          </View>
-        ) : (
-          <Image
-            source={{ uri: imageUri }}
-            style={styles.userImage}
-            onPress={() => navigator.navigate("Profile_section")}
-          />
-        )}
+        <TouchableOpacity onPress={() => navigator.navigate("Profile_section")}>
+          {!newImageUri ? (
+            <View style={styles.userImage}>
+              <FontAwesome
+                name="user-circle-o"
+                size={35}
+                color={Colors.black}
+              />
+            </View>
+          ) : (
+            <Image source={{ uri: newImageUri }} style={styles.userImage} />
+          )}
+        </TouchableOpacity>
       </View>
     </View>
   );

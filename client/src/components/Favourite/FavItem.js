@@ -28,8 +28,12 @@ export default function FavItem({ place, removeThisItem }) {
           />
         )}
         <View style={styles.details}>
-          <Text style={styles.name}>{place.name}</Text>
-          <Text style={styles.address} numberOfLines={3}>{place.vicinity}</Text>
+          <Text style={styles.name} numberOfLines={1}>
+            {place.name}
+          </Text>
+          <Text style={styles.address} numberOfLines={3}>
+            {place.vicinity}
+          </Text>
           <View style={styles.rating}>
             {place.rating !== undefined ? (
               <Text style={styles.ratingDetails}>{place.rating}</Text>
@@ -39,14 +43,14 @@ export default function FavItem({ place, removeThisItem }) {
             <MaterialCommunityIcons name="star" size={13} color={Colors.grey} />
           </View>
         </View>
+        <TouchableOpacity onPress={() => removeThisItem(place._id)}>
+          <MaterialCommunityIcons
+            name="delete-circle"
+            size={45}
+            color={Colors.crimson}
+          />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.delete} onPress={() => removeThisItem(place._id)}>
-        <MaterialCommunityIcons
-          name="delete-circle"
-          size={45}
-          color={Colors.crimson}
-        />
-      </TouchableOpacity>
     </View>
   );
 }
@@ -63,7 +67,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.placeDetail,
     borderRadius: 20,
-    elevation: 1,
+    elevation: 2,
   },
   photo: {
     width: 100,
@@ -72,7 +76,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   details: {
-    width: "65%",
+    width: "63%",
     height: "fit-content",
     gap: 2,
   },
@@ -102,12 +106,5 @@ const styles = StyleSheet.create({
     fontFamily: "SourceCodePro-Regular",
     fontSize: 13,
     color: Colors.grey,
-  },
-  delete: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
-    top: "-20%"
   },
 });

@@ -26,12 +26,9 @@ export default function EditProfile() {
     userEmail,
     userId,
     setLocation,
-    fetchProfile,
-    setFetchProfile,
-    searchProfile,
-    setSearchProfile,
+    imageUri,
+    setImageUri,
   } = useContext(UserDetailsContext);
-  const [imageUri, setImageUri] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const fetchUserProfile = async (filename) => {
@@ -132,8 +129,6 @@ export default function EditProfile() {
 
       Alert.alert(response.data.message);
       await fetchUserProfile(userId);
-      setFetchProfile(true);
-      setSearchProfile(true);
     } catch (error) {
       Alert.alert("Error", error.response.data.message);
       setLoading(false);
@@ -165,8 +160,6 @@ export default function EditProfile() {
       Alert.alert(response.data.message);
       setImageUri(null);
       setLoading(false);
-      setFetchProfile(true);
-      setSearchProfile(true);
     } catch (error) {
       Alert.alert(error.response.data.message);
       setLoading(false);
@@ -198,13 +191,6 @@ export default function EditProfile() {
             <Image source={{ uri: imageUri }} style={styles.logo} />
           )}
           <View style={styles.editBar}>
-            {/* <TouchableOpacity onPress={editUserProfile}>
-              <FontAwesome5
-                name="user-edit"
-                size={40}
-                color={Colors.bayernBlue}
-              />
-            </TouchableOpacity> */}
             <Button
               title="Upload Image"
               color={Colors.bayernBlue}
